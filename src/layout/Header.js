@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const _Container = styled.div`
 height: 50px!important;
 background : red;
+z-index: 10;
 `;
 
 const Header = () => {
