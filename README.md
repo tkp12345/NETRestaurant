@@ -1,7 +1,7 @@
  </br>
 -
 
-#0. 개요
+# 0. 개요
 ---
 > **주제 : 내주변 맛집, 카페 리뷰 웹 사이트** </br>
 **배경 : 사내 점심 결재를 위한 특정 회사의 어플리케이션을 사용중에 있었다.      
@@ -12,6 +12,7 @@
  </br>
 # 1. 구성원 (6명)
 ---
+
 > **팀장 : 박건욱**     </br>
 **팀원 : 심유섭, 이영애, 박진향, 최정우, 전인구**
 
@@ -25,7 +26,17 @@
 
 ---
 ```
-git repository down 
+git repository down
+
+client>
+
+NETRESTAURANT/ .../netrestaurant
+- npm install  
+- npm start 
+
+server>
+
+NETRESTAURANT/ .../netRestaurantServer
 - npm install  
 - npm start 
 ```
