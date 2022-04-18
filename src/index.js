@@ -3,13 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
+import AuthForm from './context/AuthForm';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-    <App />
-    </BrowserRouter>,
+   <AuthForm>
+     <App />
+   </AuthForm>
+  </BrowserRouter>,
   document.getElementById(root)
 );
 
