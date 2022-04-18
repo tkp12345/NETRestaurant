@@ -1,5 +1,4 @@
-import {React,useMemo,useState,createRef,createContext,useImperativeHandle,useCallback} from 'react';
-import { Children } from 'react/cjs/react.production.min';
+import {React,children,useMemo,useState,createRef,createContext,useImperativeHandle,useCallback} from 'react';
 import Login from '../layout/Login';
 
 
@@ -10,9 +9,14 @@ const AuthContext = createContext({});
 const contextRef = createRef();
 
 
+/*****************************************************************
+ *  AUTH 기능 ContextApi 컴포넌트
+ * 
+ *****************************************************************/
 const AuthForm = () => {
 const [isLogin,setIsLogin] = useState(false);
 
+//service 주입
 const onSignUp =useCallback(async (username,password,name,email)=>{
  
 });
@@ -47,7 +51,7 @@ const contextForm = useMemo(()=>({
         <AuthContext.Provider value={contextForm}>
             {isLogin?(
                 //하위 요소 호출 
-                Children
+                children
             ):(
                 <div>
                     <Login onSignUp={onSignUp} onLogin={onLogin}/>
