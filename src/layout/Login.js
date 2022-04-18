@@ -120,10 +120,11 @@ const Login = () => {
     );
 };
 const _Container = styled.div`
+padding :60px;
 display: flex;
 flex-direction: column;
 width: 100vw;
-margin-top: 100px;
+margin-top: 200px;
 height: 100%;
 justify-content: center;
 align-items: center;
