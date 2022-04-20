@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {children} from 'react';
 import styled from 'styled-components';
 
 
@@ -16,34 +16,11 @@ const SectionContainer = styled.div`
   position: absolute;
 `
 
-// const Section = styled.div`
-// display: felx;
-// & ${Section}:nth-child(1)  {
-//     top: -350px;
-//     width: 600px;
-//     height: 600px;
-//     background: #ff359b;
-//   }
-// & ${Section}:nth-child(2)  {
-//     bottom: -150px;
-//     left: 100px;
-//     width: 500px;
-//     height: 500px;
-//     background: #fffd97;
-//   }
-// & ${Section}:nth-child(3)  {
-//     background: #ff00ff;
-//   }
-
-// `;
-
 const AppContainer = () => {
     return (
         <_Container>
             <SectionContainer>
-                {/* <Section/>
-                <Section/>
-                <Section/> */}
+               {children}
             </SectionContainer>
         </_Container>
     );

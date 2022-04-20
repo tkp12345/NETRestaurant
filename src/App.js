@@ -1,24 +1,24 @@
 import { BrowserRouter, Routes, Route, } from 'react-router-dom';
 import React, { Component } from 'react';
-import PageNotFound from './layout/PageNotFound'; 
-import Main from './layout/Main'; 
+import PageNotFound from './page/PageNotFound'; 
+import Main from './page/Main'; 
 import Header from './layout/Header'; 
 import Login from './layout/Login'; 
 import AppContainer from './layout/AppContainer'; 
+import styled from 'styled-components';
+import Food from './components/category/Food';
+import Coffee from './components/category/Coffee';
 
 function App() {
   return (
     <div className="App">
-    {/* <AppContainer> */}
           <Header/> 
           <Routes>
-            <Route  path="/" element={<Login/>} />
-            <Route  path="/login" element={<Login/>} />
-            {/* <Route path="/a" element={a} /> */}
-            {/* <Route path="/b" element={b} /> */}
+            <Route  path="/" element={<Main/>} />
+            <Route  path="/food" element={<Food/>} />
+            <Route  path="/coffee" element={<Coffee/>} />
             <Route element={<PageNotFound/>} />
           </Routes>
-    {/* </AppContainer> */}
     </div>
   );
 }
