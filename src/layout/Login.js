@@ -15,6 +15,7 @@ const Login = () => {
     const [isAlert, setIsAlert] = useState(false);
 
 
+    //text 입력에 따른 input 처리 
     const onChange = (event) => {
         const { target: { name, value, checked }} = event;
         switch (name) {
@@ -124,7 +125,7 @@ padding :60px;
 display: flex;
 flex-direction: column;
 width: 100vw;
-margin-top: 200px;
+margin-top: 100px;
 height: 100%;
 justify-content: center;
 align-items: center;

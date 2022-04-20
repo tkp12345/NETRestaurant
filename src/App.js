@@ -9,19 +9,9 @@ import styled from 'styled-components';
 import Food from './components/category/Food';
 import Coffee from './components/category/Coffee';
 
-const _Container = styled.div`
-height:100vh;
-position: absolute;
-`;
-
-
-const SectionContainer = styled.div`
-  position: absolute;
-`
 function App() {
   return (
     <div className="App">
-    {/* <AppContainer> */}
           <Header/> 
           <Routes>
             <Route  path="/" element={<Main/>} />
@@ -29,7 +19,6 @@ function App() {
             <Route  path="/coffee" element={<Coffee/>} />
             <Route element={<PageNotFound/>} />
           </Routes>
-    {/* </AppContainer> */}
     </div>
   );
 }

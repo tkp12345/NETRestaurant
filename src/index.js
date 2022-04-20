@@ -4,8 +4,10 @@ import './index.css';
 import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 import AuthForm from './context/AuthForm';
-import { AuthController } from './util/AuthController';
+import { AuthController } from './controller/auth';
 import HttpConnect from './util/http';
+import TokenStorage from './controller/token';
+import Auth from './service/auth';
 
 /******************************************************* **********
  * 기능별로 만든 클래스를 의존성 주입 합니다  
@@ -19,8 +21,8 @@ const authController = new AuthController();
 const httpRequest = new HttpConnect( baseURL, authController);
 
 //권한 설정 
-// const tokenStorage = new TokenStorage();
-// const authService = new AuthService(httpRequest,tokenStorage);
+const tokenController = new TokenStorage();
+const authService = new Auth(httpRequest,tokenController);
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
