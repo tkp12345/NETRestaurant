@@ -12,23 +12,33 @@ const contextRef = createRef();
 /*****************************************************************
  *  AUTH 기능 ContextApi 컴포넌트
  * 
+ * 
+ * authService : 권한 설정(로그인 , 로그아웃, 회원가입 , Auth) 클래스 
+ * authController : 권한 설정 감지 
  *****************************************************************/
-const AuthForm = () => {
+const AuthForm = ({authService,authController}) => {
 const [isLogin,setIsLogin] = useState(false);
 
-//service 주입
+  //자식에있는 요소를 부모에서 호출하기 위한 훅 :https://developer-alle.tistory.com/372
+  useImperativeHandle(contextRef, () => (isLogin ? isLogin.token : false));
+
+//service 주입 api 요청 
 const onSignUp =useCallback(async (username,password,name,email)=>{
- 
-});
+        console.log('회원가입....')
+    authService.signup(username,password,name,email)
+    .then((res)=>setIsLogin(res))
+},[authService]);
 
 const onLogin =useCallback(async (username,password,name,email)=>{
- 
-});
-
+    console.log('로그인....')
+    authService.login(username, password)
+    .then((res)=> {setIsLogin(res)
+         console.log('res:',res)})
+},[authService]);
 const onLogout =useCallback(async (username,password,name,email)=>{
- 
-});
-
+    authService.logout()
+    .then(() => setIsLogin(false))
+},[authService]);
 
 //contextApi 를 사용하기위한 상위 선언변수들을 넣어줍니다 
 const contextForm = useMemo(()=>({
@@ -41,11 +51,7 @@ const contextForm = useMemo(()=>({
     onLogin,
     onLogout]);
 
-
-  //자식에있는 요소를 부모에서 호출하기 위한 훅 :https://developer-alle.tistory.com/372
-  useImperativeHandle(contextRef, () => (isLogin ? isLogin.token : false));
-
-
+console.log('AuthForm- 로그인 확인:',isLogin)
 
     return (
         <AuthContext.Provider value={contextForm}>
@@ -57,8 +63,6 @@ const contextForm = useMemo(()=>({
                     <Login onSignUp={onSignUp} onLogin={onLogin}/>
                 </div>
             )}
-
-
         </AuthContext.Provider>
     );
 };

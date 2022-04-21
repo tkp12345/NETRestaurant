@@ -4,15 +4,14 @@ import img from '../img/netImg.png'
 import food from '../img/food.png'
 import coffee from '../img/coffee.png'
 
-const Login = () => {
+const Login = ({onSignUp,onLogin}) => {
 
-    const [isSignup,setIsSignup] = useState(true);
+    const [isSignup,setIsSignup] = useState(false);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [text, setText] = useState('');
-    const [isAlert, setIsAlert] = useState(false);
 
 
     //text 입력에 따른 input 처리 
@@ -32,15 +31,22 @@ const Login = () => {
           default:
         }
       };
+      const setError = (error) => {
+        setText(error.toString());
+        alert('error!');
+      };
+      const onSubmit = (event) => {
+        console.log('userName:',username)
+        console.log('password:',password)
+        console.log('isSignup:',isSignup)
+        event.preventDefault();
+        if (isSignup) {
+          onSignUp(username, password, name, email).catch(setError);
+        } else {
+          onLogin(username, password).catch(setError);
+        }
+      };
 
-    //   const onSubmit = (event) => {
-    //     event.preventDefault();
-    //     if (signup) {
-    //       onSignUp(username, password, name, email, url).catch(setError);
-    //     } else {
-    //       onLogin(username, password).catch(setError);
-    //     }
-    //   };
 
     return (
       <_Container>
@@ -52,7 +58,7 @@ const Login = () => {
         <_Box/>
 <_Login>
         <_Logo/>
-        <form className='auth-form' >
+        <form onSubmit={onSubmit} >
         <div>
             <_Input
             name='username'
@@ -100,16 +106,31 @@ const Login = () => {
           />
         </div>
         )}
-        <div className='form-signup'>
-        <label htmlFor='signup'> 아직 아이디가 없으신가요?</label>
-          <_Input
+        {isSignup ?(
+        
+        <><div style={{display:'flex', alignItems: 'center'}}> 
+           <_SignupText > 로그인으로 돌아가기</_SignupText>
+        <_InputButton
+            onClick={()=>setIsSignup(false)}
+            value='로그인'
+          />
+            </div></>):(
+          <>
+        <div style={{display:'flex', alignItems: 'center'}}>
+        <_SignupText > 아직 아이디가 없으신가요</_SignupText>
+          <_InputButton
             name='signup'
             id='signup'
-            type='botton'
+            type='submit'
             onChange={onChange}
-            // checked={signup}
-          />
+            onClick={()=>setIsSignup(true)}
+            value='회원가입'
+          >
+          </_InputButton>
         </div>
+        </>
+        )
+      }
         <_Button className='form-btn auth-form-btn' type='submit'>
           {isSignup ? '회원가입' : '로그인'}
         </_Button>
@@ -159,7 +180,7 @@ margin-bottom:40px;
     `
 
 const _Input = styled.input`
-width: 100%;
+width: 300px;
 background: rgba(255,255,255,0.2);
 border: none;
 outline: none;
@@ -179,9 +200,49 @@ margin: 8px 0;
 }
 `;
 
+const _SignupText = styled.div`
+font-size: 13px;
+color: #a14aaf;
+font-weight: 600;
+width:100%;
+    `
+
+
+const _InputButton = styled.input.attrs({ type: 'submit' })`
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  border-radius: 5px;
+  height: 25px;
+  border-color: transparent;
+  box-shadow: 0px;
+  outline: none;
+  transition: 0.15s;
+  text-align: center;
+  text-decoration: underline;
+  &:active {
+    background-color: #f1ac15;
+  }
+  }
+  `;
+
 const _Button = styled.button`
-    background: #fff;
-    color: #666;
+width: 100%;
+background: rgba(255,255,255,0.2);
+border: none;
+outline: none;
+padding: 10px 20px;
+border-radius: 35px;
+border: 1px solid rgba(255,255,255,0.5);
+border-right: 1px solid rgba(255,255,255,0.2);
+border-bottom: 1px solid rgba(255,255,255,0.2);
+font-size: 16px;
+letter-spacing:1px;
+color:#fff;
+box-shadow:0 5px 15px rgba(0,0,0,0.05);
+margin: 8px 0;
 `;
 
 const _BoxContainer = styled.div`

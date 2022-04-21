@@ -13,13 +13,16 @@ export default class Auth{
 //로그인 
 async login(username,password){
     //로그인 비동기 요청 
+    console.log('로그인 서버요청');
     const res = await this.http.fetch('/auth/login',{
         method:'POST',
         body:JSON.stringify({
             username,
             password,
         })
-    });
+    }
+    );
+     console.log('로그인:',res)
     //성공 한다면 토큰스토리지 로그인 정보 저장 
     this.tokenStorage.setToken(res.token)
     return res;
@@ -38,6 +41,7 @@ async signUp(username , password,name, email){
          email,
      })
  });
+ console.log('회원가입:',res)
  //성공 한다면 토큰스토리지 회원가입정보 저장 
  this.tokenStorage.setToken(res.token);
  return res;
