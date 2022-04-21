@@ -16,7 +16,7 @@ const contextRef = createRef();
  * authService : 권한 설정(로그인 , 로그아웃, 회원가입 , Auth) 클래스 
  * authController : 권한 설정 감지 
  *****************************************************************/
-const AuthForm = ({authService,authController}) => {
+const AuthForm = ({authService,authController,children}) => {
 const [isLogin,setIsLogin] = useState(false);
 
   //자식에있는 요소를 부모에서 호출하기 위한 훅 :https://developer-alle.tistory.com/372
