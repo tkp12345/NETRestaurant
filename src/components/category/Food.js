@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
+import {restaurantList} from '../testData';
+import KakaoMapScript from '../kakaoMapScript'
+
 
 // https://darrengwon.tistory.com/275
 // https://ddeck.tistory.com/29?category=866566
@@ -44,57 +47,12 @@ const Food = () => {
     },[]); */
 
 ///////////////////////api 연결 전 테스트용//////////////////////////////////////
-    let tempData = [{
-        restaurantId : 1,
-        restaurantName: '여의도 한식집',
-        restaurantAddress: '여의도 100',
-        restaurantScore: 5
-    },{
-        restaurantId : 2,
-        restaurantName: '여의도 양식집',
-        restaurantAddress: '여의도 200',
-        restaurantScore: 3.9
-    },{
-        restaurantId : 3,
-        restaurantName: '여의도 중식집',
-        restaurantAddress: '여의도 300',
-        restaurantScore: 3.5
-    },{
-        restaurantId : 4,
-        restaurantName: '여의도 일식집',
-        restaurantAddress: '여의도 400',
-        restaurantScore: 2
-    },{
-        restaurantId : 5,
-        restaurantName: '여의도 분식집',
-        restaurantAddress: '여의도 500',
-        restaurantScore: 4
-    },{
-        restaurantId : 5,
-        restaurantName: '여의도 분식집',
-        restaurantAddress: '여의도 500',
-        restaurantScore: 4
-    },{
-        restaurantId : 5,
-        restaurantName: '여의도 분식집',
-        restaurantAddress: '여의도 500',
-        restaurantScore: 4
-    },{
-        restaurantId : 5,
-        restaurantName: '여의도 분식집',
-        restaurantAddress: '여의도 500',
-        restaurantScore: 4
-    },{
-        restaurantId : 5,
-        restaurantName: '여의도 분식집',
-        restaurantAddress: '여의도 500',
-        restaurantScore: 4
-    }];
+
 
     useEffect( () => {
         try{
             const getRestaurantList = async () => {
-                const _aRestaurant = await tempData.map((rowData) => (
+                const _aRestaurant = await restaurantList.map((rowData) => (
                     {
                         restaurantId: rowData.restaurantId,
                         restaurantName: rowData.restaurantName,
@@ -102,7 +60,7 @@ const Food = () => {
                         restaurantScore: rowData.restaurantScore
                     })
                 );
-                setARestaurant(aRestaurant.concat(_aRestaurant));
+                setARestaurant(aRestaurant.concat(_aRestaurant)) ;
             }
             getRestaurantList();
         } catch(e) {
@@ -117,28 +75,28 @@ const Food = () => {
 //////////////////////////////////////////////////////////////////////////
 
     return (
-        <>
-        <h2>식당 목록</h2>
-        <_div_list>
+        <div >
+            <h2>식당 목록</h2>
+            <_div_list>
 
-            {/* rowData 가 없으면 '작성된 글이 없습니다'를 나타냄 */}
-            {
-                aRestaurant ? aRestaurant.map(rowData => (
-                                    // 최초 선언한 기본값은 나타내지 않음
-                                    rowData.restaurantId !== '' &&
-                                    <_div_info>
-                                        {/* 이동 시 id값을 param 으로 전달 */}
-                                        <Link to={`/getRestaurantContent/${rowData.restaurantId}`}>{rowData.restaurantName}</Link>
-                                        <br/>
-                                        <Link to={`/getRestaurantContent/${rowData.restaurantId}`}>{rowData.restaurantAddress}</Link>
-                                    </_div_info>
-                                )) : <_div_info>
-                                        작성된 글이 없습니다.
-                                    </_div_info>
-            }
+                {/* rowData 가 없으면 '작성된 글이 없습니다'를 나타냄 */}
+                {
+                    aRestaurant ? aRestaurant.map((rowData,idx) => (
+                                        // 최초 선언한 기본값은 나타내지 않음
+                                        rowData.restaurantId !== '' &&
+                                        <_div_info key={idx}>
+                                            {/* 이동 시 id값을 param 으로 전달 */}
+                                            <Link key={idx+rowData.restaurantName} to={`/getRestaurantContent/${rowData.restaurantId}`}>{rowData.restaurantName}</Link>
+                                            <br/>
+                                            <Link key={idx+rowData.restaurantAddress} to={`/getRestaurantContent/${rowData.restaurantId}`}>{rowData.restaurantAddress}</Link>
+                                        </_div_info>
+                                    )) : <_div_info>
+                                            작성된 글이 없습니다. 
+                                        </_div_info> 
+                }
 
-        </_div_list>
-      </>
+            </_div_list>
+      </div>
     );
 };
 
@@ -158,4 +116,4 @@ border-top: 1px solid #dbdbdb;
 font-size : 100%
  `;
 
-export default Food;
+ export default Food;
