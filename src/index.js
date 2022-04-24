@@ -28,9 +28,12 @@ const authService = new Auth(httpRequest,tokenController);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <BrowserRouter>
-   <AuthForm>
+   {/* <AuthForm 
+   authService={authService}
+   authController={authController}
+   > */}
      <App />
-   </AuthForm>
+  {/* </AuthForm> */}
   </BrowserRouter>,
   document.getElementById(root)
 );
