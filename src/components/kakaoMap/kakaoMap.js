@@ -1,18 +1,21 @@
 const { kakao } = window;
 
+export let searchDataList = [];
+// 
 // https://apis.map.kakao.com/web/sample/keywordBasic/
 export default function KakaoMapScript(category) {
 
+    // 검색 정보를 담을 배열
 
     // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
-    var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
+    let placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
         contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
         markers = [], // 마커를 담을 배열입니다
         currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
 
 
-    const container = document.getElementById('myMap');
+    const container = document.getElementById('map');
     const mapOption = {
         center: new kakao.maps.LatLng(37.520126, 126.929827),
         level: 5 // 지도의 확대 레벨
@@ -65,6 +68,8 @@ export default function KakaoMapScript(category) {
 
     // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
     function placesSearchCB(data, status, pagination) {
+        searchDataList = data;
+        // console.log(searchDataList);
         if (status === kakao.maps.services.Status.OK) {
 
             // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
@@ -196,4 +201,5 @@ export default function KakaoMapScript(category) {
         } 
     }
 
+    return searchDataList;
 }
