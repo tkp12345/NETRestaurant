@@ -1,5 +1,6 @@
 import React, {useEffect} from 'react';
 import KakaoMapScript from '../kakaoMapScript'
+import SearchList from '../category/FoodComponents/SearchList'
 
 const Food = () => {
     // MT1 대형마트
@@ -27,11 +28,19 @@ const Food = () => {
 
 
     return (
-
-        <div id='myMap' style={{
-            width: '1000px',
-            height: '1000px'
-        }}></div>
+        <div>
+            <span>
+                <div id='myMap' style={{
+                    width: '800px',
+                    height: '500px'
+                }}></div>
+            </span>
+            <span>
+                <SearchList>
+                </SearchList>
+            </span>
+            
+        </div>
     );
 };
 
