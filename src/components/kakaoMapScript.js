@@ -1,5 +1,6 @@
 const { kakao } = window;
-
+// import goodClick from '../img/good_click.png';
+import goodNotClick from '../img/good_notClick.png';
 // https://apis.map.kakao.com/web/sample/keywordBasic/
 export default function KakaoMapScript(category) {
 
@@ -115,29 +116,29 @@ export default function KakaoMapScript(category) {
 
     // 검색결과 항목을 Element로 반환하는 함수입니다
     // TODO : 리액트 문법으로 변경 가능하지 않을까?
-    function getListItem(index, places) {
-        console.log(places);
+    function getListItem(index, place) {
+        console.log(place);
         var el = document.createElement('li'),
         itemStr = '<div class="info">' +
-                  '   <h5>' + places.place_name + '</h5>';
+                  '   <h5>' + place.place_name + '</h5>';
 
-        if (places.road_address_name) {
-            itemStr += '    <span>' + places.road_address_name + '</span>' +
-                        '   <span class="jibun gray">' +  places.address_name  + '</span>';
+        if (place.road_address_name) {
+            itemStr += '    <span>' + place.road_address_name + '</span>' +
+                        '   <span class="jibun gray">' +  place.address_name  + '</span>';
         } else {
-            itemStr += '    <span>' +  places.address_name  + '</span>'; 
+            itemStr += '    <span>' +  place.address_name  + '</span>'; 
         }
         
         // TODO : 상세 보기 클릭을 a 태그가 아닌 모달 창으로 변경하자 
-        itemStr += '    <a href="https://place.map.kakao.com/' + places.id + '" target="_blank" >상세 정보</a>';
+        itemStr += '    <a href="' + place.place_url + '" target="_blank" >상세 정보</a>';
 
-        itemStr += '  <span class="tel">' + places.phone  + '</span>' +
+        itemStr += '  <span class="tel">' + place.phone  + '</span>' +
                     '</div>';           
 
-
         // TODO : 좋아요!
-        
+        itemStr += '<img src='+goodNotClick+' class = "goodImg" ></img>'
 
+        itemStr += '</span>';
         
         el.innerHTML = itemStr;
         el.className = 'item';
