@@ -13,8 +13,6 @@ export default function KakaoMapScript(category) {
         markers = [], // 마커를 담을 배열입니다
         currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
-
-
     const container = document.getElementById('map');
     const mapOption = {
         center: new kakao.maps.LatLng(37.520126, 126.929827),
@@ -39,9 +37,16 @@ export default function KakaoMapScript(category) {
     // 커스텀 오버레이 컨텐츠를 설정합니다
     placeOverlay.setContent(contentNode);  
 
+    // 검색 결과 목록이나 마커를 클릭했을 때 장소명을 표출할 인포윈도우를 생성합니다
+    var infowindow = new kakao.maps.InfoWindow({zIndex:1});
+
     // // 각 카테고리에 클릭 이벤트를 등록합니다
     // addCategoryClickEvent();
-    onClickCategory(category);
+    // onClickCategory(category);
+
+    placeOverlay.setMap(null);
+    currCategory = category;
+    searchPlaces();
 
     // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
     function addEventHandle(target, type, callback) {
@@ -90,20 +95,52 @@ export default function KakaoMapScript(category) {
         // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
         // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
        // var order = document.getElementById(currCategory).getAttribute('data-order');
+        var listEl = document.getElementById('placesList'),
+            menuEl = document.getElementById('menu_wrap'),
+            fragment = document.createDocumentFragment(), 
+            bounds = new kakao.maps.LatLngBounds(), 
+            listStr = '';
 
+        // 검색 결과 목록에 추가된 항목들을 제거합니다
+        removeAllChildNods(listEl);
+        
         for ( var i=0; i<places.length; i++ ) {
 
-                // 마커를 생성하고 지도에 표시합니다
-                var marker = addMarker(new kakao.maps.LatLng(places[i].y, places[i].x));
+            // 마커를 생성하고 지도에 표시합니다
+            var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
+                marker = addMarker(placePosition),
+                itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
 
-                // 마커와 검색결과 항목을 클릭 했을 때
-                // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
-                (function(marker, place) {
-                    kakao.maps.event.addListener(marker, 'click', function() {
-                        displayPlaceInfo(place);
-                    });
-                })(marker, places[i]);
+            // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+            // LatLngBounds 객체에 좌표를 추가합니다
+            // bounds.extend(placePosition);
+
+            // 마커와 검색결과 항목을 클릭 했을 때
+            // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
+            (function(marker, place) {
+                kakao.maps.event.addListener(marker, 'click', function() {
+                    displayPlaceInfo(place);
+                });
+
+                itemEl.onmouseover =  function () {
+                    displayInfowindow(marker, place);
+                };
+    
+                itemEl.onmouseout =  function () {
+                    infowindow.close();
+                };
+
+            })(marker, places[i]);
+
+            fragment.appendChild(itemEl);
         }
+
+        // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
+        listEl.appendChild(fragment);
+        menuEl.scrollTop = 0;
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        // map.setBounds(bounds);
     }
 
     // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
@@ -160,65 +197,45 @@ export default function KakaoMapScript(category) {
         placeOverlay.setMap(map);  
     }
 
+    // 검색결과 항목을 Element로 반환하는 함수입니다
+    function getListItem(index, places) {
 
-    // // 각 카테고리에 클릭 이벤트를 등록합니다
-    // function addCategoryClickEvent() {
-    //     var category = document.getElementById('category'),
-    //         children = category.children;
+        var el = document.createElement('li'),
+        itemStr = '<span class="markerbg marker_' + (index+1) + '"></span>' +
+                    '<div class="info">' +
+                    '   <h5>' + places.place_name + '</h5>';
 
-    //     for (var i=0; i<children.length; i++) {
-    //         children[i].onclick = onClickCategory;
-    //     }
-    // }
-
-    // // 카테고리를 클릭했을 때 호출되는 함수입니다
-    // function onClickCategory() {
-    //     var id = this.id,
-    //         className = this.className;
-
-    //     placeOverlay.setMap(null);
-
-    //     if (className === 'on') {
-    //         currCategory = '';
-    //         changeCategoryClass();
-    //         removeMarker();
-    //     } else {
-    //         currCategory = id;
-    //         changeCategoryClass(this);
-    //         searchPlaces();
-    //     }
-    // }
-
-    // 카테고리를 클릭했을 때 호출되는 함수입니다
-    // overloading
-    function onClickCategory(id, className) {
-        placeOverlay.setMap(null);
-
-        if (className === 'on') {
-            currCategory = '';
-           // changeCategoryClass();
-            removeMarker();
+        if (places.road_address_name) {
+            itemStr += '    <span>' + places.road_address_name + '</span>' +
+                        '   <span class="jibun gray">' +  places.address_name  + '</span>';
         } else {
-            currCategory = id;
-            //changeCategoryClass(this);
-            searchPlaces();
+            itemStr += '    <span>' +  places.address_name  + '</span>'; 
         }
+                    
+        itemStr += '  <span class="tel">' + places.phone  + '</span>' +
+                    '</div>';           
+
+        el.innerHTML = itemStr;
+        el.className = 'item';
+
+        return el;
     }
 
-    // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
-    // function changeCategoryClass(el) {
-    //     var category = document.getElementById('category'),
-    //         children = category.children,
-    //         i;
+    // 검색결과 목록 또는 마커를 클릭했을 때 호출되는 함수입니다
+    // 인포윈도우에 장소명을 표시합니다
+    function displayInfowindow(marker, title) {
+        var content = '<div style="padding:5px;z-index:1;">' + title + '</div>';
 
-    //     for ( i=0; i<children.length; i++ ) {
-    //         children[i].className = '';
-    //     }
+        infowindow.setContent(content);
+        infowindow.open(map, marker);
+    }
 
-    //     if (el) {
-    //         el.className = 'on';
-    //     } 
-    // }
+    // 검색결과 목록의 자식 Element를 제거하는 함수입니다
+    function removeAllChildNods(el) {   
+        while (el.hasChildNodes()) {
+            el.removeChild (el.lastChild);
+        }
+    }
 
     return searchDataList;
 }

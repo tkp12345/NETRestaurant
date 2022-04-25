@@ -2,17 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
-import {restaurantList} from '../foodTestData';
-import KakaoMapScript, { searchDataList } from '../kakaoMap/kakaoMap';
+// import {restaurantList} from '../foodTestData';
+import KakaoMapScript/* , {searchDataList} */ from '../kakaoMap/kakaoMap';
 import '../kakaoMap/kakaoMap.css';
 
 
 const { kakao } = window;
 
-
+// export const searchDataList = [];
+// 키워드로 장소검색하고 목록으로 표출하기 : //https://apis.map.kakao.com/web/sample/keywordList/
+//카테고리별 장소 검색하기 : https://apis.map.kakao.com/web/sample/categoryFromBounds/
+// React Component : https://yuna-library.tistory.com/9
 
 const Food = () => {
-
+    //  const [restaurantLIst, setRestaurantLIst] = useState([{
+    //     restaurantId : '',
+    //     restaurantName: '',
+    //     restaurantAddress: '',
+    //     restaurantScore: ''
+    // }]);
+    // const [restaurantList, setRestaurantList] = useState([]);
     // MT1 대형마트
     // CS2 편의점
     // PS3 어린이집, 유치원
@@ -39,12 +48,6 @@ const Food = () => {
 
     return (
         <div>
-            <p style={{
-                marginTop:'-12px'}}>
-                <em className="link">
-                    <a href="/web/documentation/#CategoryCode" target="_blank">카테고리 코드목록을 보시려면 여기를 클릭하세요!</a>
-                </em>
-            </p>
             <div className="map_wrap">
                 <div id="map" style={{
                     width:'100%',
@@ -52,11 +55,41 @@ const Food = () => {
                     position:'relative',
                     overflow:'hidden'
                 }}></div>
-            </div> 
+            </div>
+            <div id="menu_wrap" className="bg_white">
+                <div className="option">
+                    <div>
+                        {/* <form onsubmit="searchPlaces(); return false;">
+                            키워드 : <input type="text" value="이태원 맛집" id="keyword" size="15"> 
+                            <button type="submit">검색하기</button> 
+                        </form> */}
+                    </div>
+                </div>
+                <ul id="placesList"></ul>
+                <div id="pagination"></div>
+            </div>
+            <h2>식당 목록</h2>
+            {/* <Test /> */}
         </div>
     );
 };
 
+
+const _div_list = styled.div`
+padding :10px;
+display: flex;
+display:block;
+margin-top: 100px;
+justify-content: center;
+align-items: center;
+`;
+const _div_info = styled.div`
+padding :10px;
+display: flex;
+margin-top: 10px;
+border-top: 1px solid #dbdbdb;
+font-size : 100%
+ `;
 export default Food;
 
 
