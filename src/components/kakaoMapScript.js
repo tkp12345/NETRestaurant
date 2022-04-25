@@ -6,9 +6,13 @@ export default function KakaoMapScript() {
 	let placeOverlay = new kakao.maps.CustomOverlay({zIndex: 1}),
 		contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
 		markers = [],       // 마커를 담을 배열입니다
-		currCategory = ''; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+		currCategory = '',  // 현재 선택된 카테고리를 가지고 있을 변수입니다
+        lastdetailInfo= ''; // 이전 장소에 대한 정보 
 
-	const container = document.getElementById('myMap');
+	const container = document.getElementById('kakaomap'); // 지도
+	const detail = document.getElementById('detail');
+	const lastdetail = document.getElementById('lastdetail');
+
 	
 	const options = {
 		center: new kakao.maps.LatLng(37.520126, 126.929827),
@@ -62,7 +66,7 @@ export default function KakaoMapScript() {
 	}
 
 	// 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-	function placesSearchCB(data, status, pagination) {
+	function placesSearchCB(data, status) {
 		if (status === kakao.maps.services.Status.OK) {
 			// 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
 			displayPlaces(data);
@@ -134,6 +138,7 @@ export default function KakaoMapScript() {
 
 	// 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
 	function displayPlaceInfo(place) {
+		
 		var content =
 			'<div class="placeinfo">' +
 			'   <a class="title" href="' +
@@ -171,8 +176,14 @@ export default function KakaoMapScript() {
 			'</span>' +
 			'</div>' +
 			'<div class="after"></div>';
+        
+		
 
-		contentNode.innerHTML = content;
+		//contentNode.innerHTML = content;
+		detail.innerHTML = content;
+		console.log(lastdetailInfo);
+		lastdetail.innerHTML = lastdetailInfo;
+		lastdetailInfo += content;
 		placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
 		placeOverlay.setMap(map);
 	}
