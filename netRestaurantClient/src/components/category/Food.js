@@ -3,56 +3,17 @@ import { Link } from "react-router-dom";
 import axios from 'axios';
 import styled from 'styled-components';
 import {restaurantList} from '../foodTestData';
-import KakaoMapScript, { searchDataList } from '../kakaoMap/kakaoMap';
+import KakaoMap from '../kakaoMap/kakaoMap';
 import '../kakaoMap/kakaoMap.css';
 
 
 const { kakao } = window;
 
-
-
 const Food = () => {
-
-    // MT1 대형마트
-    // CS2 편의점
-    // PS3 어린이집, 유치원
-    // SC4 학교
-    // AC5 학원
-    // PK6 주차장
-    // OL7 주유소, 충전소
-    // SW8 지하철역
-    // BK9 은행
-    // CT1 문화시설
-    // AG2 중개업소
-    // PO3 공공기관
-    // AT4 관광명소
-    // AD5 숙박
-    // FD6 음식점
-    // CE7 카페
-    // HP8 병원
-    // PM9 약국
-
-    useEffect(() => {
-        // 음식점 조회하여 지도에 마커 표출합니다.
-        KakaoMapScript('FD6');
-    }, []);
 
     return (
         <div>
-            <p style={{
-                marginTop:'-12px'}}>
-                <em className="link">
-                    <a href="/web/documentation/#CategoryCode" target="_blank">카테고리 코드목록을 보시려면 여기를 클릭하세요!</a>
-                </em>
-            </p>
-            <div className="map_wrap">
-                <div id="map" style={{
-                    width:'100%',
-                    height:'100%',
-                    position:'relative',
-                    overflow:'hidden'
-                }}></div>
-            </div> 
+            <KakaoMap/>
         </div>
     );
 };
