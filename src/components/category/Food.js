@@ -26,7 +26,6 @@ const Food = () => {
         KakaoMapScript('FD6');
     }, []);
 
-
     return (
         <div>
             <span>

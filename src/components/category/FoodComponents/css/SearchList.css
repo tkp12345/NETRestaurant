@@ -8,7 +8,8 @@
 #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
 #placesList .item span {display: block;margin-top:4px;}
 #placesList .item h5, #placesList .item .info {text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
-#placesList .item .info{padding:10px 80px 10px 0;}
+#placesList .item .info{padding:10px 80px 10px 10px; width: 80%;float: left;}
+#placesList .item .good{padding:30px 0 0 0; width: 20%;float: right;}
 #placesList .info .gray {color:#8a8a8a;}
 #placesList .info .jibun {padding-left:26px;background:url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_jibun.png) no-repeat;}
 #placesList .info .tel {color:#009900;}

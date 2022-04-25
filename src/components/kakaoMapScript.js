@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from "react-dom";
+import ListItem from './category/FoodComponents/ListItem';
 const { kakao } = window;
 // import goodClick from '../img/good_click.png';
 import goodNotClick from '../img/good_notClick.png';
@@ -54,11 +57,13 @@ export default function KakaoMapScript(category) {
             // menuEl = document.getElementById('menu_wrap'),
             fragment = document.createDocumentFragment(), 
             bounds = new kakao.maps.LatLngBounds(); 
+
+        ReactDOM.unmountComponentAtNode(listEl);
         
         removeAllChildNods(listEl);
         // 지도에 표시되고 있는 마커를 제거합니다
         removeMarker();
-
+        let array = [];
         for ( var i=0; i<places.length; i++ ) {
             // TODO : DB 에서 따봉 및 기타 정보 조회 후 설정
 
@@ -66,10 +71,9 @@ export default function KakaoMapScript(category) {
             // 마커를 생성하고 지도에 표시합니다
             var placePosition = new kakao.maps.LatLng(places[i].y, places[i].x),
                 marker = addMarker( placePosition ),
-                itemEl = getListItem(i, places[i]); // 검색 결과 항목 Element를 생성합니다
+                itemEl = getListItem( places[i],infowindow,map,marker ); // 검색 결과 항목 Element를 생성합니다
             
-            
-            (function(marker, title) {
+            (function (marker,title) {
                 kakao.maps.event.addListener(marker, 'mouseover', function() {
                     displayInfowindow(marker, title);
                 });
@@ -78,27 +82,29 @@ export default function KakaoMapScript(category) {
                     infowindow.close();
                 });
     
-                itemEl.onmouseover =  function () {
-                    displayInfowindow(marker, title);
-                };
+                // itemEl.onmouseover =  function () {
+                //     displayInfowindow(marker, places[i].place_name);
+                // };
     
-                itemEl.onmouseout =  function () {
-                    infowindow.close();
-                };
+                // itemEl.onmouseout =  function () {
+                //     infowindow.close();
+                // };
             })(marker, places[i].place_name);
+            
 
             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-            // LatLngBounds 객체에 좌표를 추가합니다
             bounds.extend(placePosition);
-            fragment.appendChild(itemEl);
+            // fragment.appendChild(itemEl);
+            array.push(itemEl);
         }
-    
         // 검색결과 항목들을 검색결과 목록 Element에 추가합니다
-        listEl.appendChild(fragment);
-        // menuEl.scrollTop = 0;
-    
-        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
-        // map.setBounds(bounds);
+        // listEl.appendChild(fragment);
+        ReactDOM.render(
+            <>
+            {array}
+            </>,
+            listEl
+        );
     }
 
     // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
@@ -116,34 +122,35 @@ export default function KakaoMapScript(category) {
 
     // 검색결과 항목을 Element로 반환하는 함수입니다
     // TODO : 리액트 문법으로 변경 가능하지 않을까?
-    function getListItem(index, place) {
+    function getListItem( place,infowindow,map,marker ) {
         console.log(place);
-        var el = document.createElement('li'),
-        itemStr = '<div class="info">' +
-                  '   <h5>' + place.place_name + '</h5>';
 
-        if (place.road_address_name) {
-            itemStr += '    <span>' + place.road_address_name + '</span>' +
-                        '   <span class="jibun gray">' +  place.address_name  + '</span>';
-        } else {
-            itemStr += '    <span>' +  place.address_name  + '</span>'; 
-        }
+        // var el = document.createElement('li'),
+        // itemStr = '<div class="info">' +
+        //         '   <h5>' + place.place_name + '</h5>';
+
+        // if (place.road_address_name) {
+        //     itemStr += '    <span>' + place.road_address_name + '</span>' +
+        //                 '   <span class="jibun gray">' +  place.address_name  + '</span>';
+        // } else {
+        //     itemStr += '    <span>' +  place.address_name  + '</span>'; 
+        // }
         
-        // TODO : 상세 보기 클릭을 a 태그가 아닌 모달 창으로 변경하자 
-        itemStr += '    <a href="' + place.place_url + '" target="_blank" >상세 정보</a>';
+        // // TODO : 상세 보기 클릭을 a 태그가 아닌 모달 창으로 변경하자 
+        // itemStr += '    <a href="' + place.place_url + '" target="_blank" >상세 정보</a>';
 
-        itemStr += '  <span class="tel">' + place.phone  + '</span>' +
-                    '</div>';           
+        // itemStr += '  <span class="tel">' + place.phone  + '</span>' +
+        //             '</div>';           
 
-        // TODO : 좋아요!
-        itemStr += '<img src='+goodNotClick+' class = "goodImg" ></img>'
+        // // TODO : 좋아요!
+        // itemStr += '<img src='+goodNotClick+' class = "goodImg" ></img>'
 
-        itemStr += '</span>';
+        // itemStr += '</span>';
         
-        el.innerHTML = itemStr;
-        el.className = 'item';
-
-        return el;
+        // el.innerHTML = itemStr;
+        // el.className = 'item';
+        const test = ListItem( place, infowindow, map,marker );
+        return test;
     }
 
     // 검색결과 목록 하단에 페이지번호를 표시는 함수입니다
