@@ -33,10 +33,9 @@ const Food = () => {
     // PM9 약국
 
     useEffect(() => {
-        KakaoMapScript('CE7');
+        // 음식점 조회하여 지도에 마커 표출합니다.
+        KakaoMapScript('FD6');
     }, []);
-
-    
 
     return (
         <div>
@@ -53,36 +52,6 @@ const Food = () => {
                     position:'relative',
                     overflow:'hidden'
                 }}></div>
-                <ul id="category">
-                    <li id="FD6" data-order="0"> 
-                        <span className="category_bg bank"></span>
-                        음식점
-                    </li>       
-                    {/* <li id="MT1" data-order="1"> 
-                        <span className="category_bg mart"></span>
-                        마트
-                    </li>  
-                    <li id="PM9" data-order="2"> 
-                        <span className="category_bg pharmacy"></span>
-                        약국
-                    </li>  
-                    <li id="OL7" data-order="3"> 
-                        <span className="category_bg oil"></span>
-                        주유소
-                    </li>  
-                    <li id="CE7" data-order="4"> 
-                        <span className="category_bg cafe"></span>
-                        카페
-                    </li>  
-                    <li id="CS2" data-order="5"> 
-                        <span className="category_bg store"></span>
-                        편의점
-                    </li>
-                    <li id="FD6" data-order="6"> 
-                        <span className="category_bg store"></span>
-                        음식점
-                    </li> */}
-                </ul>
             </div> 
         </div>
     );
