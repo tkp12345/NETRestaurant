@@ -8,7 +8,22 @@ const { kakao } = window;
 
 const KakaoMap = () => {
     // 검색결과 배열에 담아줌
-    const [Places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState([
+        // 데이터 예)
+        // ddress_name: "서울 영등포구 여의도동 28-1"
+        // category_group_code: "FD6"
+        // category_group_name: "음식점"
+        // category_name: "음식점 > 양식"
+        // distance: ""
+        // id: "27353169"
+        // phone: "02-2055-4442"
+        // place_name: "세상의모든아침 여의도점"
+        // place_url: "http://place.map.kakao.com/27353169"
+        // road_address_name: "서울 영등포구 여의대로 24"
+        // x: "126.91990886684258"
+        // y: "37.52217248103947"
+    ]);
+    // const [score, setScore] = useState(0);
 
     useEffect(() => {
         // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
@@ -74,6 +89,11 @@ const KakaoMap = () => {
         // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
         function placesSearchCB(data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
+
+                // [수정 필요]백단에서 데이터 가져오게 되면 수정해야되는 코드, 임시로 데이터 가져올 때마다 0으로 초기화 하는 방식으로 함.
+                data.map( (item) => {
+                    return item.score = 0;
+                });
 
                 // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
                 displayPlaces(data);
@@ -216,21 +236,26 @@ const KakaoMap = () => {
             ></div>
             <div id="menu_wrap" className="bg_white">
                 <ul id="placesList">
-                    {Places.map((item, i) => (
+                    {places.map((item, i) => (
                     <li className = "item" key={i} style={{ marginTop: '20px' }}>
                         <span className={'markerbg marker_' + (i+1)}></span>
                         <div className="info">
-                        <h5>{item.place_name}</h5>
-                        {item.road_address_name ? (
-                            <div>
-                                <span>{item.road_address_name}</span>
-                                <span className="jibun gray">{item.address_name}</span>
-                            </div>
-                        ) : (
-                            <span>{item.address_name}</span>
-                        )}
-                        <span className="tel">{item.phone}</span>
+                            <h5>{item.place_name}</h5>
+                            {item.road_address_name ? (
+                                    <div>
+                                        <span>{item.road_address_name}</span>
+                                        <span className="jibun gray">{item.address_name}</span>
+                                    </div>
+                                ) : (
+                                    <span>{item.address_name}</span>
+                                )}
+                            <span className="tel">{item.phone}</span>
                         </div>
+                        <span className="score">
+                            {/* <button id="btnGood" onClick={ () => setPlaces({[...item, score:item.score + 1}) }>👍</button>
+                            <button id="btnBad" onClick={ () => setPlaces({...item, score:item.score - 1}) }>👎</button> */}
+                            {item.score}
+                        </span>
                     </li>
                     ))}
                     <div id="pagination"></div>
