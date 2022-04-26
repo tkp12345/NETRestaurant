@@ -1,5 +1,5 @@
-import React,{useEffect} from 'react';
-import KakaoMapScript from '../kakaoMapScript'
+// import React,{useEffect} from 'react';
+// import KakaoMapScript from '../kakaoMapScript'
 
 
 const Coffee = () => {
@@ -23,9 +23,9 @@ const Coffee = () => {
     // HP8 병원
     // PM9 약국
 
-    useEffect(() => {
-        KakaoMapScript('CE7');
-    }, []);
+    // useEffect(() => {
+    //     KakaoMapScript('CE7');
+    // }, []);
 
 
     return (

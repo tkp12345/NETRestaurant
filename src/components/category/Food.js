@@ -1,6 +1,5 @@
 import React, {useEffect} from 'react';
-import KakaoMapScript from '../kakaoMapScript'
-import SearchList from '../category/FoodComponents/SearchList'
+import KakaoComponent from './FoodComponents/KakaoComponent'
 
 const Food = () => {
     // MT1 대형마트
@@ -22,24 +21,13 @@ const Food = () => {
     // HP8 병원
     // PM9 약국
 
-    useEffect(() => {
-        KakaoMapScript('FD6');
-    }, []);
+    // useEffect(() => {
+    //     KakaoMapScript('FD6');
+    // }, []);
 
     return (
-        <div>
-            <span>
-                <div id='myMap' style={{
-                    width: '800px',
-                    height: '500px'
-                }}></div>
-            </span>
-            <span>
-                <SearchList>
-                </SearchList>
-            </span>
-            
-        </div>
+        <KakaoComponent category='FD6'>
+        </KakaoComponent>
     );
 };
 
