@@ -223,6 +223,25 @@ const KakaoMap = () => {
         
     }, []);
 
+    // 객체배열 update 방법: https://stackoverflow.com/questions/55987953/how-do-i-update-states-onchange-in-an-array-of-object-in-react-hooks
+    const fnGood = (i) => {
+        // e.preventDefault();
+        
+        // // 깊은 복사를 한 변수의 값을 변경해줍니다.
+        var newArray = [...places];
+        newArray[i].score = newArray[i].score + 1;
+
+         setPlaces(newArray);
+    }
+
+    const fnBad = (i) => (event) => {
+        // // 깊은 복사를 한 변수의 값을 변경해줍니다.
+        let newArray = [...places];
+        newArray[i].score--;
+
+         setPlaces(newArray);
+    }
+
     return (
         <div>
             <div
@@ -251,10 +270,11 @@ const KakaoMap = () => {
                                 )}
                             <span className="tel">{item.phone}</span>
                         </div>
-                        <span className="score">
-                            {/* <button id="btnGood" onClick={ () => setPlaces({[...item, score:item.score + 1}) }>👍</button>
-                            <button id="btnBad" onClick={ () => setPlaces({...item, score:item.score - 1}) }>👎</button> */}
-                            {item.score}
+                        <span className="scoreSpan">
+                            {/*(기능추가 필요) 로그인 한 계정이 이미 눌렀으면 안 눌리는 기능 넣어야함*/}
+                            <span className="score"><button id="scoreBtn" onClick={() => fnGood(i)}>👍</button></span>
+                            <span className="score">{item.score}</span>
+                            <span className="score"><button id="scoreBtn" onClick={fnBad(i)}>👎</button></span>                        
                         </span>
                     </li>
                     ))}
