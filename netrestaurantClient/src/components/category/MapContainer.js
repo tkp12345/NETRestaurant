@@ -6,6 +6,8 @@ const { kakao } = window
 
 const MapContainer = ({ category }) => {
 
+  const [placeList,setPlaceList]=useState([]);
+
   useEffect(() => {
     var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
     contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
@@ -80,6 +82,7 @@ function searchPlaces() {
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
   console.log('장소검색이 완료:',data)
+  setPlaceList(data)
   if (status === kakao.maps.services.Status.OK) {
       // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
       displayPlaces(data);
@@ -162,19 +165,22 @@ function displayPlaceInfo (place) {
   // content += '    <span class="tel">' + place.phone + '</span>' + 
   //             '</div>' + 
   //             '<div class="after"></div>';
-
+console.log('palece:',place)
 let content =  ` 
 <div class="placeinfo">  
- <a class="title" href=${place.place_url}} target="_blank" title=${place.place_name}>${place.place_name}</a> 
- <div class="content">   
- <iframe class="iframe" align="center" width="100%" height="100%" src=${place.place_url} name="test" id="test" frameborder="1" scrolling="yes" >이 브라우저는 iframe을 지원하지 않습니다</iframe>
- <span title=${place.road_address_name}>${place.road_address_name}</span> 
-     <span class="jibun" title=${place.address_name}>(지번 :${place.address_name})</span>  
-       <span class="tel">${place.phone}</span>
-
-       <div>
-       </div><div class="after">
-       </div>`
+ <a class="title" href=${place.place_url} target="_blank" title=${place.place_name}>${place.place_name}</a> 
+  <div class="contents">   
+  <div>
+      <iframe class="iframe" align="center" width="100%" height="100%" src=${place.place_url} name="test" id="test" frameborder="1" scrolling="yes" ></iframe>
+      </div>
+      <div> 
+      <span title=${place.road_address_name}>${place.road_address_name}</span> 
+        <span class="jibun" title=${place.address_name}>(지번 :${place.address_name})</span>  
+        <span class="tel">${place.phone}</span>
+        <div class="after"></div>
+        </div>
+  </div>
+  </div>`
 
   contentNode.innerHTML = content;
   placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
@@ -231,25 +237,10 @@ function changeCategoryClass(el) {
 },[category]);
 
   return (
-      <div class="map_wrap">
-    <div id="map" style={{width:'1000px' ,height:'600px' ,position:'relative',overflow:'hidden'}}></div>
+    <>
+  <div class="map_wrap">
+    <div id="map" style={{width:'1400px' ,height:'600px' ,position:'relative',overflow:'hidden'}}></div>
     <ul id="category">
-        {/* <li id="BK9" data-order="0"> 
-            <span class="category_bg bank"></span>
-            은행
-        </li>       
-        <li id="MT1" data-order="1"> 
-            <span class="category_bg mart"></span>
-            마트
-        </li>  
-        <li id="PM9" data-order="2"> 
-            <span class="category_bg pharmacy"></span>
-            약국
-        </li>  
-        <li id="OL7" data-order="3"> 
-            <span class="category_bg oil"></span>
-            주유소
-        </li>   */}
         <li id="CE7" data-order="4"> 
             <span class="category_bg cafe"></span>
             카페
@@ -259,34 +250,21 @@ function changeCategoryClass(el) {
             음식점
         </li>      
     </ul>
-    {/* <div
-      id="myMap"
-      style={{
-        width: '500px',
-        height: '500px',
-      }}
-    ></div>
-    <div id="result-list">
-      {Places.map((item, i) => (
-        <div key={i} style={{ marginTop: '20px' }}>
-          <span>{i + 1}</span>
-          <div>
-            <h5>{item.place_name}</h5>
-            {item.road_address_name ? (
-              <div>
-                <span>{item.road_address_name}</span>
-                <span>{item.address_name}</span>
-              </div>
-            ) : (
-              <span>{item.address_name}</span>
-            )}
-            <span>{item.phone}</span>
-          </div>
-        </div>
-      ))}
-      <div id="pagination"></div>
-    </div> */}
+  <div style={{width:'1000px',height:'600px',fontSize:'18px', padding: '20px',background: '#FFF'}}>
+  {'🍕🍔음식점 리스트'}
+  {placeList.length ? placeList.map((place) => {
+    return(
+    <div class='categoryList'>
+    <span>{place.place_name}</span> 
+     <span>{place['category_name'].split(">").pop()}</span>
+     <a href={place.place_url}>자세히 보기</a>
+    </div>)
+  }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
+  
   </div>
+  </div>
+
+  </>
   )
 }
 

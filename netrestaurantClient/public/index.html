@@ -15,7 +15,7 @@
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=57081b355f03ac2adbaa5541d7d2cf3b&libraries=services"></script>
     <style>
       .map_wrap, .map_wrap * {margin:0; padding:0;font-family:'Malgun Gothic',dotum,'돋움',sans-serif;font-size:12px;}
-      .map_wrap {position:relative;width:100%;height:350px;}
+      .map_wrap {position:relative;width:100%;height:350px;display:flex}
       #category {position:absolute;top:10px;left:10px;border-radius: 5px; border:1px solid #909090;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.4);background: #fff;overflow: hidden;z-index: 2;}
       #category li {float:left;list-style: none;width:50px;border-right:1px solid #acacac;padding:6px 0;text-align: center; cursor: pointer;}
       #category li.on {background: #eee;}
@@ -40,8 +40,11 @@
       .placeinfo .title {font-weight: bold; font-size:14px;border-radius: 6px 6px 0 0;margin: -1px -1px 0 -1px;padding:10px; color: #fff;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
       .placeinfo .tel {color:#0f7833;}
       .placeinfo .jibun {color:#999;font-size:11px;margin-top:0;}
-      .iframe {	-ms-zoom: 0.5;
-	
+      .categoryList   { margin-bottom: 4px ;} 
+      .categoryList span { margin-right: 15px ;} 
+      .categoryList span:nth-child(1) { font-size:15px} 
+      .iframe {	
+	   
 	-moz-transform: scale(0.5);
 	-moz-transform-origin: 0 0;
 	
@@ -59,7 +62,7 @@
 	left:0px;
 	
 	width:200%;
-	height:200%;
+	height:100px;
 }
 </style>}
 
