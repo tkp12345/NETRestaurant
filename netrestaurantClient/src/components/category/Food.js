@@ -1,8 +1,7 @@
-import React ,{useEffect}from 'react';
+import React ,{useEffect,useState}from 'react';
 import kakaoMapApi from '../../util/kakaoMapApi';
-import { KAKO_DOCUMENT_ID } from '../../util/location';
-
-const { kakao } = window;
+import { CATEGORY, KAKO_DOCUMENT_ID } from '../../util/location';
+import MapContainer from './MapContainer';
 
 
  // FD6 음식점
@@ -11,15 +10,11 @@ const { kakao } = window;
 
 const Food = () => {
 
-    useEffect(() => {
-        kakaoMapApi('FD6');
-    }, []);
-
     return (
-        <div id={KAKO_DOCUMENT_ID} style={{
-            width: '800px',
-            height: '700px'
-        }}></div>
+        <div >
+        <MapContainer category={CATEGORY.food}/>
+      </div>
+  
     );
 };
 
