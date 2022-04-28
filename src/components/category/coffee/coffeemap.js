@@ -1,10 +1,15 @@
-import React, {useEffect} from 'react';
-import CurrentList from './currentList';
-import LastList from './lastList';
+import React, {useEffect, useState} from 'react';
+//import CurrentList from './currentList';
+//import LastList from './lastList';
+import RankingList from './rankingList';
 const {kakao} = window;
 
 const coffeemap = () => {
 
+    // const [lastList,setlastList] = useState([]);
+    const [rankList,setrankist] = useState([]);
+    const [currenteList,setCurrentList]=useState([]);
+    
  useEffect(() => {
     // 마커를 클릭했을 때 해당 장소의 상세정보를 보여줄 커스텀오버레이입니다
 	let placeOverlay = new kakao.maps.CustomOverlay({zIndex: 1}),
@@ -20,25 +25,25 @@ const coffeemap = () => {
 
     // 장소 검색 객체를 생성합니다
     var ps = new kakao.maps.services.Places(map);
-
+  
     // 지도에 idle 이벤트를 등록합니다
     kakao.maps.event.addListener(map, 'idle', searchPlaces);
 
-   // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
-   contentNode.className = 'placeinfo_wrap';
+    // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다
+    contentNode.className = 'placeinfo_wrap';
 
-  // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
-// 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
+    // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+    // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다
    addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
    addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
 
-  // 커스텀 오버레이 컨텐츠를 설정합니다
+   // 커스텀 오버레이 컨텐츠를 설정합니다
    placeOverlay.setContent(contentNode);
    
    //조회
    searchPlaces();
    
-  // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
+   // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
    function addEventHandle(target, type, callback) {
     if (target.addEventListener) {
         target.addEventListener(type, callback);
@@ -64,6 +69,7 @@ const coffeemap = () => {
 
     // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
     function placesSearchCB(data, status) {
+        setCurrentList(data)
     if (status === kakao.maps.services.Status.OK) {
         // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
         displayPlaces(data);
@@ -91,7 +97,9 @@ const coffeemap = () => {
         // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
         (function (marker, place) {
             kakao.maps.event.addListener(marker, 'click', function () {
-                // id 별로 마커 클릭 횟수 -> mongodb 에 담음 
+                // @@ id 별로 마커 클릭 횟수 -> mongodb 에 담음 
+               // setcurrentList(place);
+                setrankist(place);
                 displayPlaceInfo(place);
             });
         })(marker, places[i]);
@@ -132,7 +140,7 @@ const coffeemap = () => {
     markers = [];
 }
 
-// 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
+//클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
 function displayPlaceInfo(place) {
     
     var content =
@@ -167,7 +175,7 @@ function displayPlaceInfo(place) {
     }
 
     content +=
-        '    <span class="tel">' +
+        '<span class="tel">' +
         place.phone +
         '</span>' +
         '</div>' +
@@ -178,6 +186,7 @@ function displayPlaceInfo(place) {
     contentNode.innerHTML = content;
     placeOverlay.setPosition(new kakao.maps.LatLng(place.y, place.x));
     placeOverlay.setMap(map);
+    
 }
 
 }, []);
@@ -186,12 +195,29 @@ function displayPlaceInfo(place) {
         <>
         <div id='kakaomap'
                 style={{
-                    width: '800px',
+                    width: '100%',
                     height: '400px',
                 }}
         ></div>
-        <LastList></LastList>
-        <CurrentList></CurrentList>
+        {/* /<LastList placeList = {lastList}t/> */}
+        <div
+            style={{
+               // width:'500px',
+                height:'880px',
+                fontSize:'30px', 
+                fontcolor : 'black',
+                padding: '180px',
+                background: 'white'
+            }}>
+          {'🕵️‍♀️현재 리스트🕵️‍♀️'}
+          <ul> 
+            { currenteList.map((place) => (
+            <li key= 'lanking'> {place.place_name}  <a href={place.place_url}>더보기</a> </li>
+            ))} 
+           </ul>
+        </div>
+
+        <RankingList placeList={rankList}/>
         </>
     );
 };

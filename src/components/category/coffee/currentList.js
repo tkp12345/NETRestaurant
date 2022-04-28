@@ -7,8 +7,8 @@ const currentList = () => {
         <div
             id='detail'
             style={{
-                width: '800px',
-                height: '100px',
+                width: '100px',
+                height: '80px',
                 position: 'static',
             }}
         ></div>
