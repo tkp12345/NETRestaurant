@@ -30,33 +30,28 @@ const KakaoMap = () => {
         let placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
             contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
             markers = []; // 마커를 담을 배열입니다
-        
-        // 지도
-        // 지도 생성
+
+        // #1-1 지도 생성
         const container = document.getElementById('map');
         const mapOption = {
             center: new kakao.maps.LatLng(37.520126, 126.929827),
             level: 5 // 지도의 확대 레벨
         };
         const map = new kakao.maps.Map(container, mapOption);
-        // 지도에 idle 이벤트를 등록합니다
+
+        // #1-2 지도에 idle 이벤트를 등록합니다
         kakao.maps.event.addListener(map, 'idle', searchPlaces);
         
-        // 커스텀 오버레이
-        // 커스텀 오버레이 컨텐츠를 설정합니다
+        // #2-1 커스텀 오버레이 컨텐츠를 설정합니다
         placeOverlay.setContent(contentNode);
-        // 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
+        // #2-2 커스텀 오버레이의 컨텐츠 노드에 css class를 추가합니다 
         contentNode.className = 'placeinfo_wrap';
-        // 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
+
+        // #2-3 커스텀 오버레이의 컨텐츠 노드에 mousedown, touchstart 이벤트가 발생했을때
         // 지도 객체에 이벤트가 전달되지 않도록 이벤트 핸들러로 kakao.maps.event.preventMap 메소드를 등록합니다 
         addEventHandle(contentNode, 'mousedown', kakao.maps.event.preventMap);
         addEventHandle(contentNode, 'touchstart', kakao.maps.event.preventMap);
         
-        // 검색 요청
-        // 장소 검색 객체를 생성합니다
-        const ps = new kakao.maps.services.Places(map);
-        searchPlaces();
-
         // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
         function addEventHandle(target, type, callback) {
             if (target.addEventListener) {
@@ -65,6 +60,20 @@ const KakaoMap = () => {
                 target.attachEvent('on' + type, callback);
             }
         }
+
+        // #3 장소 검색 객체를 생성 후 검색 요청
+        /*
+            1) 검색 요청될 때마다 마커를 다시 표시해주기 때문에, 현재 지도에 표시된 마커 제거
+            2) 검색 요청
+            3) 검색 요청 콜백함수에서 처리
+             3-1) 데이터에 임시로 점수 데이터 0으로 초기화해서 추가
+             3-2) 마커 표출, 목록 추가
+             3-3) 목록에 페이지 기능 추가
+             3-4) setPlaces:  useState로 생성한 변수에 json 데이터 set
+        */
+        const ps = new kakao.maps.services.Places(map);
+        searchPlaces();
+
 
         // 카테고리 검색을 요청하는 함수입니다
         function searchPlaces() {
@@ -96,9 +105,10 @@ const KakaoMap = () => {
                 });
 
                 // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
+                // 목록 추가
                 displayPlaces(data);
                 
-                // 페이지 목록 보여주는 displayPagination() 추가
+                // 목록에 페이지 기능 추가
                 displayPagination(pagination);
 
                 // 데이터 set
@@ -223,15 +233,34 @@ const KakaoMap = () => {
         
     }, []);
 
+    const fnRearrange = () => {
+        console.log('점수 변경으로 인한 목록 순위 변경');
+        /*
+            (기능 수정 필요) : dependency에 places를 넣으면 처음 화면 렌더링 되면서 데이터 받아오는 과정에서 2번 호출됨. -> 점수가 변경됐을 때만 호출 하도록 수정 되는지?
+            -> useEffect로 하려했는데 일단 함수 형식으로 구현
+        */
+
+        for ( let i = 0; i < places.length-1; i++ ) {
+            for ( let j = i+1; j < places.length; j++ ) {
+                if ( places[i].score < places[j].score ) {
+                    console.log(2);
+                }
+            }
+        }
+
+
+    }
+
     // 객체배열 update 방법: https://stackoverflow.com/questions/55987953/how-do-i-update-states-onchange-in-an-array-of-object-in-react-hooks
+    // 음식 목록에서 점수를 update 합니다.
     const fnGood = (i) => {
         // e.preventDefault();
-        
         // // 깊은 복사를 한 변수의 값을 변경해줍니다.
         var newArray = [...places];
         newArray[i].score = newArray[i].score + 1;
 
-         setPlaces(newArray);
+        setPlaces(newArray);
+        fnRearrange();
     }
 
     const fnBad = (i) => (event) => {
@@ -239,7 +268,8 @@ const KakaoMap = () => {
         let newArray = [...places];
         newArray[i].score--;
 
-         setPlaces(newArray);
+        setPlaces(newArray);
+        fnRearrange();
     }
 
     return (
@@ -271,10 +301,38 @@ const KakaoMap = () => {
                             <span className="tel">{item.phone}</span>
                         </div>
                         <span className="scoreSpan">
-                            {/*(기능추가 필요) 로그인 한 계정이 이미 눌렀으면 안 눌리는 기능 넣어야함*/}
+                            {/*(백단 연결 후 기능추가 필요) 로그인 한 계정이 이미 눌렀으면 안 눌리는 기능 넣어야함*/}
                             <span className="score"><button id="scoreBtn" onClick={() => fnGood(i)}>👍</button></span>
                             <span className="score">{item.score}</span>
                             <span className="score"><button id="scoreBtn" onClick={fnBad(i)}>👎</button></span>                        
+                        </span>
+                    </li>
+                    ))}
+                    <div id="pagination"></div>
+                </ul>
+            </div>
+            <div id="menu_wrap_rearrange" className="bg_white">
+                <ul id="placesList">
+                    {places.map((item, i) => (
+                    <li className = "item" key={i} style={{ marginTop: '20px' }}>
+                        <span className={'markerbg marker_' + (i+1)}></span>
+                        <div className="info">
+                            <h5>{item.place_name}</h5>
+                            {item.road_address_name ? (
+                                    <div>
+                                        <span>{item.road_address_name}</span>
+                                        <span className="jibun gray">{item.address_name}</span>
+                                    </div>
+                                ) : (
+                                    <span>{item.address_name}</span>
+                                )}
+                            <span className="tel">{item.phone}</span>
+                        </div>
+                        <span className="scoreSpan">
+                            {/*(백단 연결 후 기능추가 필요) 로그인 한 계정이 이미 눌렀으면 안 눌리는 기능 넣어야함*/}
+                            {/* <span className="score"><button id="scoreBtn" onClick={() => fnGood(i)}>👍</button></span> */}
+                            <span className="score">{item.score}</span>
+                            {/* <span className="score"><button id="scoreBtn" onClick={fnBad(i)}>👎</button></span>                         */}
                         </span>
                     </li>
                     ))}

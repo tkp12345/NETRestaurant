@@ -10,6 +10,13 @@
 #menu_wrap .option p {margin:10px 0;}  
 #menu_wrap .option button {margin-left:5px;}
 
+#menu_wrap_rearrange {position:absolute; top:590px;left:600px;bottom:0;width:500px;height:450px;margin:10px 0 30px 10px;padding:5px;overflow-y:auto;z-index: 1;font-size:12px;border-radius: 10px;}
+.bg_white {background: #eaecff; }
+#menu_wrap_rearrange hr {display: block; height: 1px;border: 0; border-top: 2px solid #5F5F5F;margin:3px 0;}
+#menu_wrap_rearrange .option{text-align: center;}
+#menu_wrap_rearrange .option p {margin:10px 0;}  
+#menu_wrap_rearrange .option button {margin-left:5px;}
+
 #placesList li {list-style: none;}
 #placesList .item {position:relative;border-bottom:1px solid #888;overflow: hidden;cursor: pointer;min-height: 65px;}
 #placesList .item span {display: block;margin-top:4px;}
