@@ -27,8 +27,8 @@
       #category li .mart {background-position: -10px -36px;}
       #category li .pharmacy {background-position: -10px -72px;}
       #category li .oil {background-position: -10px -108px;}
-      #category li .cafe {border-radius:6px;background:url('./img/coffee.png') ; background-color:purple; background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
-      #category li .store {border-radius:6px;background:url('./img/food.png') ; background-color:purple; background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
+      #category li .cafe {border-radius:6px;background:url('./img/coffee.png') ;box-shadow: 0 25px 45px rgba(0,0,0,0.1); backdrop-filter:blur(4px); background-color: rgba(102,0,153,0.3); background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
+      #category li .store {border-radius:6px;background:url('./img/food.png') ; box-shadow: 0 25px 45px rgba(0,0,0,0.1); background-color: rgba(102,0,153,0.3); background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
       #category li.on .category_bg {background-position-x:-46px;}
       .placeinfo_wrap {position:absolute;bottom:28px;left:-150px;width:300px;}
       .placeinfo {position:relative;width:100%;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;padding-bottom: 10px;background: #fff;}
@@ -37,12 +37,16 @@
       .placeinfo a, .placeinfo a:hover, .placeinfo a:active{color:#fff;text-decoration: none;}
       .placeinfo a, .placeinfo span {display: block;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;}
       .placeinfo span {margin:5px 5px 0 5px;cursor: default;font-size:13px;}
-      .placeinfo .title {font-weight: bold; font-size:14px;border-radius: 6px 6px 0 0;margin: -1px -1px 0 -1px;padding:10px; color: #fff;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+      .placeinfo .title {font-weight: bold; font-size:14px;border-radius: 6px 6px 0 0;margin: -1px -1px 0 -1px;padding:10px; color: #fff;backdrop-filter:blur(2px);background: rgba(102,0,153,0.3);background: rgba(102,0,153,0.3) url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
       .placeinfo .tel {color:#0f7833;}
       .placeinfo .jibun {color:#999;font-size:11px;margin-top:0;}
       .categoryList   { margin-bottom: 4px ;} 
       .categoryList span { margin-right: 15px ;} 
-      .categoryList span:nth-child(1) { font-size:15px} 
+      .categoryList span:nth-child(1) {display: inline-block; font-size:18px ; width:240px; font-weight: bold} 
+      .categoryList span:nth-child(2) {     font-family: NotoSansCJKKR;
+    font-size: 15px;
+    font-weight: bold;
+  color:rgb(197, 0, 242)} 
       .iframe {	
 	   
 	-moz-transform: scale(0.5);
@@ -64,9 +68,8 @@
 	width:200%;
 	height:100px;
 }
-</style>}
+</style>
 
-      </style>
   </head>
   <body>
     <!-- 배경 칼라 설청 -->

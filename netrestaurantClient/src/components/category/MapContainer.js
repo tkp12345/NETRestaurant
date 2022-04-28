@@ -257,7 +257,7 @@ function changeCategoryClass(el) {
     <div class='categoryList'>
     <span>{place.place_name}</span> 
      <span>{place['category_name'].split(">").pop()}</span>
-     <a href={place.place_url}>자세히 보기</a>
+     <a href={place.place_url}>👉자세히 보기</a>
     </div>)
   }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
   

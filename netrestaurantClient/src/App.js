@@ -8,11 +8,13 @@ import AppContainer from './layout/AppContainer';
 import styled from 'styled-components';
 import Food from './components/category/Food';
 import Coffee from './components/category/Coffee';
+import Nav from './layout/Nav';
 
 function App() {
   return (
     <div className="App">
           <Header/> 
+          <Nav/>
           <Routes>
             <Route  path="/" element={<Main/>} />
             <Route  path="/food" element={<Food/>} />
