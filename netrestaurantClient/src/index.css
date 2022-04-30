@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
+
 }
 
 
@@ -14,9 +15,10 @@ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
   sans-serif;
 -webkit-font-smoothing: antialiased;
 -moz-osx-font-smoothing: grayscale;
-
-overflow: hidden;
-height:100vh;
+/* height:100%; */
+overflow-y: scroll;
+/* overflow: hidden; */
+height:100%;
 align-items: center;
 width:100%;
 justify-content: center;
@@ -61,3 +63,5 @@ section .color:nth-child(3)
   height: 500px;
   background: #b57bd8;
 }
+
+
