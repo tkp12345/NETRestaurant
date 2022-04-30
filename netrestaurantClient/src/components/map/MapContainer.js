@@ -6,6 +6,7 @@ const { kakao } = window
 
 const MapContainer = ({ category }) => {
 
+  const [rest,setRest]= useState([])
   const [placeList,setPlaceList]=useState([]);
 
   useEffect(() => {
