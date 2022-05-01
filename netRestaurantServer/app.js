@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import authRouter from './router/auth.js'
+import mysql from 'mysql'
 // import foodRouter from './router/food.js'
 
 //express 미들웨어 사용 - express server를 만들게 되면 이 서버는 이제 요청을 받을수 있게됨
@@ -27,5 +28,28 @@ app.use((req, res, next) => {
     res.sendStatus(500);
   });
 
+  
+// const mysql = require('mysql');
+const connection = mysql.createConnection({
+    host    : 'localhost',
+    user    : 'root',
+    password : 'netrestaurant',
+    database : 'restaurant'
+});
+
+connection.connect();
+
+connection.query('SELECT * FROM RESTRAUNT', (error, rows, fields) => {
+    if (error) throw error;
+    console.log('=========================');
+    console.log('RESTRAUNT LIST');
+    console.log(rows);
+    console.log('=========================');
+});
+
+connection.end();
+
+
 //client 응답 대기 포트 8080 
-app.listen(8080)
+app.listen(8080);
+
