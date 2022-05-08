@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import './MapContainerPharmacy.css';
-
+import Axios from 'axios';
 
 const { kakao } = window;
 
@@ -98,13 +98,22 @@ const MapContainerPharmacy = () => {
         }
 
         // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-        function placesSearchCB(data, status, pagination) {
+        // 약국리스트 조회 결과로 setPlaces 하기 위해 async await으로 동기 처리
+        async function placesSearchCB(data, status, pagination) {
             if (status === kakao.maps.services.Status.OK) {
-
-                // [수정 필요]백단에서 데이터 가져오게 되면 수정해야되는 코드, 임시로 데이터 가져올 때마다 0으로 초기화 하는 방식으로 함.
-                data.map( (item) => {
-                    return item.score = 0;
+                await Axios.post('http://localhost:8080/pharmacy/getKakaoListWithScore',{
+                    kakaoMapData:data
+                }).then((res)=>{
+                    console.log('http://localhost:8080/pharmacy/getKakaoListWithScore');
+                    // score 데이터를 가져옴
+                    data = res.data;
                 });
+
+
+                // // [수정 필요]백단에서 데이터 가져오게 되면 수정해야되는 코드, 임시로 데이터 가져올 때마다 0으로 초기화 하는 방식으로 함.
+                // data.map( (item) => {
+                //     return item.score = 0;
+                // });
 
                 // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
                 // 목록 추가
@@ -261,6 +270,9 @@ const MapContainerPharmacy = () => {
         var newArray = [...places];
         newArray[i].score = newArray[i].score + 1;
 
+        // DB의 score 수정
+        fnReqModKakaoScore(newArray[i].id, newArray[i].score);
+
         setPlaces(newArray);
         fnRearrange();
     }
@@ -270,8 +282,21 @@ const MapContainerPharmacy = () => {
         let newArray = [...places];
         newArray[i].score--;
 
+        // DB의 score 수정
+        fnReqModKakaoScore(newArray[i].id, newArray[i].score);
+        
         setPlaces(newArray);
         fnRearrange();
+    }
+
+    // id로 RES_KAKAO_MAP_DATA 조회하여 score를 수정한다.
+    const fnReqModKakaoScore = (id, score) => {
+        Axios.post('http://localhost:8080/pharmacy/modifyKakaoScore',{
+            id:id,
+            score:score
+        }).then((res)=>{
+            console.log('http://localhost:8080/pharmacy/modifyKakaoScore');
+        });
     }
 
     return (
