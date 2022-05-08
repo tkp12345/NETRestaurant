@@ -1,14 +1,14 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import styled from 'styled-components';
+
+// '치즈케익 별로... 내마음의 별로',
+// '카페인 무슨 일인가요? 새벽 5시에 잠들어서 다음날 상사에게 털림',
+// '카페인 과다 섭취로 손이 떨려ㅅㅓ서얼ㄴㅇㅎㅁㄴㅎㅁㄴㄹㅇㅁ',
+// '치즈 못먹어서 치즈케익에 치즈 뺴달라 했더니 안판다 함;;',
 
 const CoffeeReviewDialogBox = ({setIsOpened, coffeeData}) => {
 	const [review, setReview] = useState('');
-	const [reviewList, setReviewList] = useState([
-		'치즈케익 별로... 내마음의 별로',
-		'카페인 무슨 일인가요? 새벽 5시에 잠들어서 다음날 상사에게 털림',
-		'카페인 과다 섭취로 손이 떨려ㅅㅓ서얼ㄴㅇㅎㅁㄴㅎㅁㄴㄹㅇㅁ',
-		'치즈 못먹어서 치즈케익에 치즈 뺴달라 했더니 안판다 함;;',
-	]);
+	const [reviewList, setReviewList] = useState([]);
 	//review textbox의 내용 변화 감지 & update
 	const onChangeReview = useCallback((e) => {
 		setReview(e.target.value);
@@ -20,13 +20,33 @@ const CoffeeReviewDialogBox = ({setIsOpened, coffeeData}) => {
 
 			setReviewList((prev) => [review, ...prev]);
 			setReview('');
+
+			let reviews =
+				JSON.parse(localStorage.getItem('coffeeReviews')) || {};
+
+			if (reviews.hasOwnProperty(coffeeData.id)) {
+				reviews[coffeeData.id] = [review, ...reviews[coffeeData.id]];
+			} else {
+				reviews[coffeeData.id] = [review];
+			}
+
+			localStorage.setItem('coffeeReviews', JSON.stringify(reviews));
 		},
-		[review],
+		[review, coffeeData.id],
 	);
 	//해당 cafe review dialog box 닫기
 	const onClickCloseDialogBox = useCallback(() => {
 		setIsOpened(false);
-	}, []);
+	}, [setIsOpened]);
+
+	useEffect(() => {
+		const reviews = JSON.parse(localStorage.getItem('coffeeReviews'));
+		if (reviews) {
+			setReviewList(reviews[coffeeData.id] || []);
+		} else {
+			setReviewList([]);
+		}
+	}, [coffeeData.id]);
 
 	return (
 		<DialogBoxContainer>
