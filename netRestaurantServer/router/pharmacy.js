@@ -85,6 +85,8 @@ router.post('/modifyKakaoScore', (req, res, next)=>{
     let datas = [score, id];
     let execSql = mariadb.query(sql, datas, (error, rows, fields) =>{
         if (error) throw error;
+
+        res.status(200).json("success");
     });
 });
 

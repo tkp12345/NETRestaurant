@@ -254,7 +254,7 @@ const MapContainerPharmacy = () => {
         for ( let i = 0; i < places.length-1; i++ ) {
             for ( let j = i+1; j < places.length; j++ ) {
                 if ( places[i].score < places[j].score ) {
-                    console.log(2);
+
                 }
             }
         }
@@ -264,38 +264,38 @@ const MapContainerPharmacy = () => {
 
     // 객체배열 update 방법: https://stackoverflow.com/questions/55987953/how-do-i-update-states-onchange-in-an-array-of-object-in-react-hooks
     // 음식 목록에서 점수를 update 합니다.
-    const fnGood = (i) => {
+    const fnGood = async (i) => {
         // e.preventDefault();
         // // 깊은 복사를 한 변수의 값을 변경해줍니다.
         var newArray = [...places];
         newArray[i].score = newArray[i].score + 1;
 
         // DB의 score 수정
-        fnReqModKakaoScore(newArray[i].id, newArray[i].score);
-
+        await Axios.post('http://localhost:8080/pharmacy/modifyKakaoScore',{
+            id : newArray[i].id,
+            score : newArray[i].score
+        }).then((res)=>{
+            console.log('http://localhost:8080/pharmacy/modifyKakaoScore');
+            setPlaces(newArray);
+            fnRearrange();
+        });
         setPlaces(newArray);
         fnRearrange();
     }
 
-    const fnBad = (i) => (event) => {
+     const fnBad = (i) => async (event) => {
         // // 깊은 복사를 한 변수의 값을 변경해줍니다.
         let newArray = [...places];
         newArray[i].score--;
 
         // DB의 score 수정
-        fnReqModKakaoScore(newArray[i].id, newArray[i].score);
-        
-        setPlaces(newArray);
-        fnRearrange();
-    }
-
-    // id로 RES_KAKAO_MAP_DATA 조회하여 score를 수정한다.
-    const fnReqModKakaoScore = (id, score) => {
-        Axios.post('http://localhost:8080/pharmacy/modifyKakaoScore',{
-            id:id,
-            score:score
+        await Axios.post('http://localhost:8080/pharmacy/modifyKakaoScore',{
+            id : newArray[i].id,
+            score : newArray[i].score
         }).then((res)=>{
             console.log('http://localhost:8080/pharmacy/modifyKakaoScore');
+            setPlaces(newArray);
+            fnRearrange();
         });
     }
 
