@@ -48,8 +48,9 @@ export async function login(req, res){
     }
 
     //로그인 성공 
-    const token = createJwtToken(user.id);
-    res.status(200).json({token,username});
+    const id = user.id;
+    const token = createJwtToken(id);
+    res.status(200).json({token, username, id});
 }
 
 function createJwtToken(id){
