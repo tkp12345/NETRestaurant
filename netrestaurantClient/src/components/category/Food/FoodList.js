@@ -93,7 +93,7 @@ const FoodList = ({ place, setPlace, list }) => {
           <ModalButton onClick={closeModal}>❌</ModalButton>
         </ButtonContainer>
         <Iframe
-          url={place.place_url}
+          url={place?.place_url}
           width="100%"
           height="100%"
           id="myId"

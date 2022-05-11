@@ -12,7 +12,7 @@ const MapContainer = ({ category }) => {
     var placeOverlay = new kakao.maps.CustomOverlay({ zIndex: 1 }),
       contentNode = document.createElement("div"), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
       markers = [], // 마커를 담을 배열입니다
-      currCategory = ""; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+      currCategory = category; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
     var mapContainer = document.getElementById("map"), // 지도를 표시할 div
       mapOption = {
@@ -54,9 +54,9 @@ const MapContainer = ({ category }) => {
 
     // 카테고리 검색을 요청하는 함수입니다
     function searchPlaces() {
-      if (!currCategory) {
-        return;
-      }
+      // if (!currCategory) {
+      //   return;
+      // }
 
       // 커스텀 오버레이를 숨깁니다
       placeOverlay.setMap(null);
@@ -64,7 +64,7 @@ const MapContainer = ({ category }) => {
       // 지도에 표시되고 있는 마커를 제거합니다
       removeMarker();
 
-      ps.categorySearch(currCategory, placesSearchCB, { useMapBounds: true });
+      ps.categorySearch(category, placesSearchCB, { useMapBounds: true });
     }
 
     // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
@@ -184,6 +184,7 @@ const MapContainer = ({ category }) => {
         el.className = "on";
       }
     }
+    searchPlaces();
   }, []);
 
   return (
