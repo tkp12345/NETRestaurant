@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import goodClick from '../../../img/good_click.png';
 import goodNotClick from '../../../img/good_notClick.png'
+import Axios from 'axios';
 
 const ListItem = ( props ) => {
     const [hover, setHover] = useState(false);
-    const [isGoodClick, setIsGoodClick] = useState(props.places.good);
-
+    const [isGoodClick, setIsGoodClick] = useState(props.places.isGood);
+    console.log(props);
     const place = props.places,
         infowindow = place.infowindow,
         map = place.map,
@@ -21,6 +22,22 @@ const ListItem = ( props ) => {
 
     useEffect(() => {
         // TODO : DB 저장
+        if( isGoodClick ){
+            Axios.post('http://localhost:8080/accommodation/setGood',{
+                mapId : props.places.id,
+                userId : 'test' 
+            }).then( (res) => {
+            
+            });
+
+        } else {
+            Axios.post('http://localhost:8080/accommodation/delGood',{
+                mapId : props.places.id,
+                userId : 'test' 
+            }).then( (res) => {
+            
+            });
+        }
     }, [isGoodClick]);
 
 

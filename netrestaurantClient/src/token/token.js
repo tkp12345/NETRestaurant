@@ -22,4 +22,13 @@ export default class TokenStorage{
     clearToken(){
         localStorage.clear('token');
     }
+
+    getId(){
+        return localStorage.getItem('token')
+    }
+
+    setId(id){
+        localStorage.setItem('id',id);
+    }
+
 }

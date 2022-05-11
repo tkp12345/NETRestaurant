@@ -24,7 +24,10 @@ async login(username,password){
     );
      console.log('로그인:',res)
     //성공 한다면 토큰스토리지 로그인 정보 저장 
-    this.tokenStorage.setToken(res.token)
+    this.tokenStorage.setToken(res.token);
+    // this.tokenStorage.setId( username );
+    this.tokenStorage.setId( 'test' );
+
     return res;
 }
 

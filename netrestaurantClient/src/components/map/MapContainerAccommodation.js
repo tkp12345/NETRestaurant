@@ -1,6 +1,7 @@
 import React, {useState,useEffect} from 'react';
 import ListItem from '../category/Accommodation/ListItem';
 import "./MapContainerAccommodation.css";
+import Axios from 'axios';
 
 const { kakao } = window;
 const infowindow = new kakao.maps.InfoWindow({zIndex:1});
@@ -41,9 +42,9 @@ const MapContainerAccommodation = ( props ) => {
    
 
     // 키워드 검색 완료 시 호출되는 콜백함수 입니다
-    function placesSearchCB (data, status, pagination) {
-        if (status === kakao.maps.services.Status.OK) {
-            setLoadDataList( displayMarker( data ) );
+     function placesSearchCB (data, status, pagination) {
+        if ( status === kakao.maps.services.Status.OK)  {
+            displayMarker( data );
             displayPagination(pagination);
         }
     }
@@ -51,7 +52,7 @@ const MapContainerAccommodation = ( props ) => {
     // 카테고리 검색을 요청하는 함수입니다
     function searchPlaces() {
         onReset();
-        ps.categorySearch('FD6', placesSearchCB, {useMapBounds:true}); 
+        ps.categorySearch('AD5', placesSearchCB, {useMapBounds:true}); 
     }
 
     // 지도 위에 표시되고 있는 마커를 모두 제거합니다
@@ -63,12 +64,12 @@ const MapContainerAccommodation = ( props ) => {
     }
 
     // 지도에 마커를 표시하는 함수입니다
-    function displayMarker(places) {
+     function displayMarker(places) {
         var bounds = new kakao.maps.LatLngBounds(); 
         
         // 지도에 표시되고 있는 마커를 제거합니다
         removeMarker();
-
+        let array = [];
          // 마커 생성 
         places.map( ( item, i ) => {
             let placePosition = new kakao.maps.LatLng( item.y, item.x ),
@@ -87,8 +88,22 @@ const MapContainerAccommodation = ( props ) => {
             item.map = map;
             // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
             bounds.extend(placePosition);
+
+            Axios.post('http://localhost:8080/accommodation/getGood',{
+                mapId : item.id,
+                userId : 'test' 
+            }).then( (res) => {
+                let data = res.data;
+                item.isGood = data.length > 0 ? true : false;
+                array.push(item);
+                if( places.length === i + 1 ){
+                    // 마지막 이라면 
+                    setLoadDataList( array );
+                }
+            });
         });
-        return places;
+
+        // setLoadDataList( places );
     }
 
     // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
