@@ -22,6 +22,7 @@ const ListItem = ( props ) => {
 
     useEffect(() => {
         // TODO : DB 저장
+        console.log(isGoodClick);
         if( isGoodClick ){
             Axios.post('http://localhost:8080/accommodation/setGood',{
                 mapId : props.places.id,
@@ -31,9 +32,12 @@ const ListItem = ( props ) => {
             });
 
         } else {
-            Axios.post('http://localhost:8080/accommodation/delGood',{
-                mapId : props.places.id,
-                userId : 'test' 
+            Axios.delete('http://localhost:8080/accommodation/delGood',{
+                data : 
+                { 
+                    mapId : props.places.id,
+                    userId : 'test'
+                } 
             }).then( (res) => {
             
             });
