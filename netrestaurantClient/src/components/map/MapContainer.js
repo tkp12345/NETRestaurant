@@ -1,4 +1,4 @@
-import React, { useEffect,useState  } from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {CATEGORY, NET_LOCATION} from '../../util/location'
 import styled from "styled-components";
 
@@ -25,7 +25,7 @@ margin-left:10px;
 	height:600px;
 font-size:18px;
 	padding:20px;
-	background:#fff;
+	background:#ffffffb3;
 	border-radius:6px;
 	box-shadow: 0 25px 45px rgb(0 0 0 / 10%);
 	overflow:scroll;
@@ -36,26 +36,44 @@ const LeftListSection = styled.div`
 	height:400px;
 font-size:18px;
 	padding:20px;
-	background:#fff;
+	background:#ffffffb3;
 	margin-top :10px;
 	border-radius:6px;
 	box-shadow: 0 25px 45px rgb(0 0 0 / 10%);
 	overflow:scroll;
 
 `;
+const MainTitle = styled.div`
+margin-bottom:15px;
+font: small-caps bold 24px/1 sans-serif;
+font-size: 2.vw;
+color: rgb(211 174 219);
+text-shadow: -1px 0 #ffffff, 0 1px black, 1px 0 #ffffff, 0 -1px #ffffff;
+`;
+
 
 
 
 const { kakao } = window
 
 const MapContainer = ({ category ,setDB,DB}) => {
-
+console.log('kako:',kakao);
   const [rest,setRest]= useState([])
   const [placeList,setPlaceList]=useState([]);
 
-  useEffect(()=>{
-      setDB(DB.filter(({ id: id1 }) => !placeList.some(({ id: id2 }) => id2 != id1)));
+  const onclickLike = useCallback((place)=>{
+      console.log('click 정보:',place)
+      const data = JSON.parse(localStorage.getItem('DB'))
+      console.log('data:',data);
+      const newData = data.forEach(v=>{
+          if(v.id === place.id){
+              v.like=v.like+1;
+          }
+      })
+
+      localStorage.setItem('DB', JSON.stringify(data))
   },[])
+
 
     useEffect(() => {
     var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
@@ -130,9 +148,13 @@ function searchPlaces() {
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
-  console.log('🎈🎈장소검색이 완료:',data)
-    console.log('🎈🎈장소검색이 완료 DB:',DB)
-    const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)))
+    //localstorage
+    const newDB=[...data.filter(v=>DB.every(s=>s.id !== v.id))]
+    const likeAdd =newDB.forEach((v)=>{v.like=0})
+    // const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
+    const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
+    // const newarr=DB.push(newDB)
+    // const likeAdd =DB.forEach((v)=>{console.log(v); v.like=0})
     localStorage.setItem('DB',JSON.stringify(DB));
   setPlaceList(data)
   if (status === kakao.maps.services.Status.OK) {
@@ -286,7 +308,7 @@ function changeCategoryClass(el) {
       el.className = 'on';
   } 
 }
-},[DB, category, setDB]);
+},[DB, category]);
 
   return (
     <>
@@ -294,14 +316,14 @@ function changeCategoryClass(el) {
       <Contents>
     <MapSection id="map" >
     <ul id="category">
-        <li id="CE7" data-order="4"> 
-            <span class="category_bg cafe"></span>
-            카페
-        </li>  
-        <li id="FD6" data-order="5"> 
-            <span class="category_bg store"></span>
-            음식점
-        </li>
+        {/*<li id="CE7" data-order="4"> */}
+        {/*    <span class="category_bg cafe"></span>*/}
+        {/*    카페*/}
+        {/*</li>  */}
+        {/*<li id="FD6" data-order="5"> */}
+        {/*    <span class="category_bg store"></span>*/}
+        {/*    음식점*/}
+        {/*</li>*/}
         <li id={CATEGORY.CONVEN} data-order="5">
             <span className="category_bg store"></span>
             편의점
@@ -309,26 +331,27 @@ function changeCategoryClass(el) {
     </ul>
   </MapSection>
           <RightListSection>
-              {'오늘 본 편의점'}
-              {placeList.length ? placeList.map((place) => {
+                  <MainTitle>{'오늘 본 편의점  '}{ localStorage.getItem('DB')  ? `${JSON.parse(localStorage.getItem('DB')).length}개` : `0개`}</MainTitle>
+              { localStorage.getItem('DB') ?(JSON.parse(localStorage.getItem('DB')).map((place) => {
                   return(
-                      <div class='categoryList'>
-                          <span>{place.place_name}</span>
-                          <span>{place['category_name'].split(">").pop()}</span>
-                          <a href={place.place_url}>👉자세히 보기</a>
-                      </div>)
-              }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
-
+                  <div class='categoryList'>
+                  <a href={place.place_url}> <span>{place.place_name}</span></a>
+              {/*<span>{place['category_name'].split(">").pop()}</span>*/}
+                  <span>{`종아요 ${place.like}`}</span>
+                  </div>)
+              })):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
           </RightListSection>
   </Contents>
   <LeftListSection>
-  {'편의점 리스트'}
-  {placeList.length ? placeList.map((place) => {
+      <MainTitle>{'편의점 실시간 리스트  '}{`${placeList.length}개`}</MainTitle>
+  {placeList.length ? placeList.map((place,index) => {
     return(
     <div class='categoryList'>
+        {`${index}. `}
     <span>{place.place_name}</span>
      <span>{place['category_name'].split(">").pop()}</span>
      <a href={place.place_url}>👉자세히 보기</a>
+        <button onClick={()=>onclickLike(place)}>{`좋아요 👍🏻`}</button>
     </div>)
   }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
   
