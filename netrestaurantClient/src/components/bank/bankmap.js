@@ -19,7 +19,7 @@ const bankmap = () => {
 	let placeOverlay = new kakao.maps.CustomOverlay({zIndex: 1}),
     contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다
     markers = [],       // 마커를 담을 배열입니다
-    currCategory = 'CE7'; // 현재 선택된 카테고리를 가지고 있을 변수입니다
+    currCategory = 'BK9'; // 현재 선택된 카테고리를 가지고 있을 변수입니다
     const container = document.getElementById('kakaomap'); // 지도
     const options = {
     center: new kakao.maps.LatLng(37.520126, 126.929827), // 회사위치
