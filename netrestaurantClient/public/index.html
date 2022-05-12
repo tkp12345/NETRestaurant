@@ -30,8 +30,9 @@
       #category li .cafe {border-radius:6px;background:url('./img/coffee.png') ;box-shadow: 0 25px 45px rgba(0,0,0,0.1); backdrop-filter:blur(4px); background-color: rgba(102,0,153,0.3); background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
       #category li .store {border-radius:6px;background:url('./img/food.png') ; box-shadow: 0 25px 45px rgba(0,0,0,0.1); background-color: rgba(102,0,153,0.3); background-size:     cover;                      /* <------ */ background-repeat:   no-repeat;background-position: center center;  }
       #category li.on .category_bg {background-position-x:-46px;}
-      .placeinfo_wrap {position:absolute;bottom:28px;left:-150px;width:300px;}
-      .placeinfo {position:relative;width:100%;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;padding-bottom: 10px;background: #fff;}
+      .placeinfo_wrap {position:relative; width:400px; height: 400px;  /* absolute는 부모가 relative일 때 부모를 따라간다. */
+        /* 16:9 비율 */}
+      .placeinfo {position:absolute;width:100%;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;background: #fff;}
       .placeinfo:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
       .placeinfo_wrap .after {content:'';position:relative;margin-left:-12px;left:50%;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
       .placeinfo a, .placeinfo a:hover, .placeinfo a:active{color:#fff;text-decoration: none;}
@@ -47,26 +48,22 @@
     font-size: 15px;
     font-weight: bold;
   color:rgb(197, 0, 242)} 
-      .iframe {	
-	   
+      .iframe {
+        -ms-zoom: 2;
 	-moz-transform: scale(0.5);
 	-moz-transform-origin: 0 0;
-	
+
 	-o-transform: scale(0.5);
 	-o-transform-origin: 0 0;
-	
+
 	-webkit-transform: scale(0.5);
 	-webkit-transform-origin: 0 0;
-	
+
 	transform: scale(0.5);
-	transform-origin: 0 0;	
-	
-	border:1px solid #ccc;
-	top:0px;
-	left:0px;
-	
+	transform-origin: 0 0;
+
 	width:200%;
-	height:100px;
+	height:60vh;
 }
 </style>
 

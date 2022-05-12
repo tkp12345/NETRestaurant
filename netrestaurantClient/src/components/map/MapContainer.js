@@ -1,15 +1,63 @@
 import React, { useEffect,useState  } from 'react'
-import { NET_LOCATION } from '../../util/location'
+import {CATEGORY, NET_LOCATION} from '../../util/location'
+import styled from "styled-components";
+
+const Container = styled.div`
+	display:flex;
+	flex-direction:column;
+`;
+const Contents = styled.div`
+	display:flex;
+`;
+
+const MapSection = styled.div`
+	width:70vw;
+	height:600px;
+	position:relatice;
+	overflow:hidden;
+	border-radius:6px;
+	box-shadow: 0 25px 45px rgb(0 0 0 / 10%);
+
+`;
+const RightListSection = styled.div`
+margin-left:10px;
+	width:25vw;
+	height:600px;
+font-size:18px;
+	padding:20px;
+	background:#fff;
+	border-radius:6px;
+	box-shadow: 0 25px 45px rgb(0 0 0 / 10%);
+	overflow:scroll;
+
+`;
+const LeftListSection = styled.div`
+	width:70vw;
+	height:400px;
+font-size:18px;
+	padding:20px;
+	background:#fff;
+	margin-top :10px;
+	border-radius:6px;
+	box-shadow: 0 25px 45px rgb(0 0 0 / 10%);
+	overflow:scroll;
+
+`;
+
 
 
 const { kakao } = window
 
-const MapContainer = ({ category }) => {
+const MapContainer = ({ category ,setDB,DB}) => {
 
   const [rest,setRest]= useState([])
   const [placeList,setPlaceList]=useState([]);
 
-  useEffect(() => {
+  useEffect(()=>{
+      setDB(DB.filter(({ id: id1 }) => !placeList.some(({ id: id2 }) => id2 != id1)));
+  },[])
+
+    useEffect(() => {
     var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
     contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
     markers = [], // 마커를 담을 배열입니다
@@ -82,7 +130,10 @@ function searchPlaces() {
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
 function placesSearchCB(data, status, pagination) {
-  console.log('장소검색이 완료:',data)
+  console.log('🎈🎈장소검색이 완료:',data)
+    console.log('🎈🎈장소검색이 완료 DB:',DB)
+    const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)))
+    localStorage.setItem('DB',JSON.stringify(DB));
   setPlaceList(data)
   if (status === kakao.maps.services.Status.OK) {
       // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
@@ -234,13 +285,14 @@ function changeCategoryClass(el) {
   if (el) {
       el.className = 'on';
   } 
-} 
-},[category]);
+}
+},[DB, category, setDB]);
 
   return (
     <>
-  <div class="map_wrap">
-    <div id="map" style={{width:'1400px' ,height:'600px' ,position:'relative',overflow:'hidden'}}></div>
+  <Container class="map_wrap">
+      <Contents>
+    <MapSection id="map" >
     <ul id="category">
         <li id="CE7" data-order="4"> 
             <span class="category_bg cafe"></span>
@@ -249,21 +301,39 @@ function changeCategoryClass(el) {
         <li id="FD6" data-order="5"> 
             <span class="category_bg store"></span>
             음식점
-        </li>      
+        </li>
+        <li id={CATEGORY.CONVEN} data-order="5">
+            <span className="category_bg store"></span>
+            편의점
+        </li>
     </ul>
-  <div style={{width:'1000px',height:'600px',fontSize:'18px', padding: '20px',background: '#FFF'}}>
-  {'🍕🍔음식점 리스트'}
+  </MapSection>
+          <RightListSection>
+              {'오늘 본 편의점'}
+              {placeList.length ? placeList.map((place) => {
+                  return(
+                      <div class='categoryList'>
+                          <span>{place.place_name}</span>
+                          <span>{place['category_name'].split(">").pop()}</span>
+                          <a href={place.place_url}>👉자세히 보기</a>
+                      </div>)
+              }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
+
+          </RightListSection>
+  </Contents>
+  <LeftListSection>
+  {'편의점 리스트'}
   {placeList.length ? placeList.map((place) => {
     return(
     <div class='categoryList'>
-    <span>{place.place_name}</span> 
+    <span>{place.place_name}</span>
      <span>{place['category_name'].split(">").pop()}</span>
      <a href={place.place_url}>👉자세히 보기</a>
     </div>)
   }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
   
-  </div>
-  </div>
+  </LeftListSection>
+  </Container>
 
   </>
   )

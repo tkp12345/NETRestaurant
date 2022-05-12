@@ -9,6 +9,7 @@ export const NET_LOCATION ={
 
 
 export const CATEGORY={
-food:'FD6',
-coffee:'CE7'
+FOOD:'FD6',
+COFFEE:'CE7',
+   CONVEN:'CS2'
 }

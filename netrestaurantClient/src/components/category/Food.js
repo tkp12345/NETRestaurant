@@ -10,7 +10,7 @@ const Food = () => {
 
     return (
         <div >
-        <MapContainer category={CATEGORY.food}/>
+        <MapContainer category={CATEGORY.FOOD}/>
       </div>
   
     );
