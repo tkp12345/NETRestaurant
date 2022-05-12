@@ -1,10 +1,11 @@
 import React from 'react';
+import MapContainerAccommodation from '../map/MapContainerAccommodation'
+
 
 const Accommodation = () => {
     return (
-        <div>
-            
-        </div>
+        <MapContainerAccommodation category='AD5'>
+        </MapContainerAccommodation>
     );
 };
 

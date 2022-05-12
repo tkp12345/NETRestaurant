@@ -27,6 +27,8 @@ async login(username,password){
     this.tokenStorage.setToken(res.token);
     localStorage.setItem('id', res.id);
     localStorage.setItem('username', res.username);
+    // this.tokenStorage.setId( username );
+    this.tokenStorage.setId( 'test' );
     return res;
 }
 

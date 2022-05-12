@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import authRouter from './router/auth.js'
+import authRouter from './router/auth.js';
+import mongoose  from 'mongoose';
+import accommodationRouter from './router/accommodation.js'
+
 // import foodRouter from './router/food.js'
 import pharmacyRouter from './router/pharmacy.js'
 
@@ -16,6 +19,8 @@ app.use(cors())
 // app.use('/auth', authRouter) : /auth 로 받은 경로처리를 authRouter 내부에서 처리한다 
 app.use('/auth', authRouter)
 
+app.use('/accommodation', accommodationRouter);
+
 //👨 10 주차 예시 
 // app.use('/food',foodRouter)
 
@@ -30,6 +35,12 @@ app.use((error, req, res, next) => {
   console.error(error);
   res.sendStatus(500);
 });
+
+// mongoose
+mongoose
+  .connect('mongodb://0.0.0.0:27017/test', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Successfully connected to mongodb'))
+  .catch(e => console.error(e));
 
 //client 응답 대기 포트 8080 
 app.listen(8080);
