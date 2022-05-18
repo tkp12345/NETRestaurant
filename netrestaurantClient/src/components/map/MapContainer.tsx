@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
+//allow : true
 import { CATEGORY, NET_LOCATION } from "../../util/location";
+// npm i --save-dev @types/styled-components
 import styled from "styled-components";
 
 const Container = styled.div`
@@ -47,43 +49,43 @@ const MainTitle = styled.div`
   color: rgb(211 174 219);
   text-shadow: -1px 0 #ffffff, 0 1px black, 1px 0 #ffffff, 0 -1px #ffffff;
 `;
+//
+// declare global {
+//   interface Window {
+//     kakao: any;
+//   }
+// }
+//
+// type NewData = {
+//   id: string;
+//   like: number;
+// };
+//
+// type Place = {
+//   id: string;
+// };
+// //
+// interface IDB {
+//   id: string;
+//   like?: number;
+// }
+//
+// interface IMapContainer {
+//   category: string;
+//   setDB: () => {};
+//   DB: IDB[];
+// }
 
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
-
-type NewData = {
-  id: string;
-  like: number;
-};
-
-type Place = {
-  id: string;
-};
-
-interface IDB {
-  id: string;
-  like?: number;
-}
-
-interface IMapContainer {
-  category: string;
-  setDB: () => {};
-  DB: IDB[];
-}
-
-const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
+const MapContainer = ({ category, setDB, DB }:{category:any,setDB:any,DB:any}) => {
   console.log("kako:", kakao);
   const [rest, setRest] = useState([]);
   const [placeList, setPlaceList] = useState([]);
 
-  const onclickLike = useCallback((place: Place) => {
+  const onclickLike = useCallback((place:{id:string}) => {
     console.log("click 정보:", place);
     const data = JSON.parse(localStorage.getItem("DB")!);
     console.log("data:", data);
-    const newData = data.forEach((v: NewData) => {
+    const newData = data.forEach((v:{id:string,like:number}) => {
       if (v.id === place.id) {
         v.like = v.like + 1;
       }
@@ -154,12 +156,12 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
     }
 
     // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-    function placesSearchCB(data: IDB[], status: number, pagination: any) {
+    function placesSearchCB(data:[], status: number, pagination: any) {
       //localstorage
-      const newDB = [...data.filter((v) => DB.every((s) => s.id !== v.id))];
-      const likeAdd = newDB.forEach((v) => {
-        v.like = 0;
-      });
+      const newDB = [...data.filter((v:{id:string}) => DB.every((s:{id:string}) => s.id !== v.id))];
+      // const likeAdd = newDB.forEach((v) => {
+      //   v.like = 0;
+      // });
       // const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
       const newarr = DB.push(
         ...data.filter((v) => DB.every((s) => s.id !== v.id)),
@@ -177,18 +179,18 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
         // 에러로 인해 검색결과가 나오지 않은 경우 해야할 처리가 있다면 이곳에 작성해 주세요
       }
     }
-    interface IPlaceInfo {
-      place_url: string;
-      place_name: string;
-      road_address_name: string;
-      address_name: string;
-      phone: string;
-      x: string;
-      y: string;
-    }
+    // interface IPlaceInfo {
+    //   place_url: string;
+    //   place_name: string;
+    //   road_address_name: string;
+    //   address_name: string;
+    //   phone: string;
+    //   x: string;
+    //   y: string;
+    // }
 
     // 지도에 마커를 표출하는 함수입니다
-    function displayPlaces(places: IPlaceInfo[]) {
+    function displayPlaces(places:{}) {
       console.log("지도에 마커를 표출");
       // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
       // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
@@ -358,13 +360,13 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
             <MainTitle>
               {"오늘 본 편의점  "}
               {localStorage.getItem("DB")
-                ? `${JSON.parse(localStorage.getItem("DB")).length}개`
+                ? `${JSON.parse(localStorage.getItem("DB")!).length}개`
                 : `0개`}
             </MainTitle>
             {localStorage.getItem("DB") ? (
-              JSON.parse(localStorage.getItem("DB")).map((place) => {
+              JSON.parse(localStorage.getItem("DB")!).map((place) => {
                 return (
-                  <div class="categoryList">
+                  <div className="categoryList">
                     <a href={place.place_url}>
                       {" "}
                       <span>{place.place_name}</span>
@@ -375,7 +377,7 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
                 );
               })
             ) : (
-              <div class="categoryList">
+              <div className="categoryList">
                 {"좌측 상단 카테고리를 클릭해주세요...."}
               </div>
             )}
@@ -389,7 +391,7 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
           {placeList.length ? (
             placeList.map((place, index) => {
               return (
-                <div class="categoryList">
+                <div className="categoryList">
                   {`${index}. `}
                   <span>{place.place_name}</span>
                   <span>{place["category_name"].split(">").pop()}</span>
@@ -401,7 +403,7 @@ const MapContainer = ({ category, setDB, DB }: IMapContainer) => {
               );
             })
           ) : (
-            <div class="categoryList">
+            <div className="categoryList">
               {"좌측 상단 카테고리를 클릭해주세요...."}
             </div>
           )}
