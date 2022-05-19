@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react'
+import React, {ReactHTMLElement, useCallback, useEffect, useState} from 'react'
 import {CATEGORY, NET_LOCATION} from '../../util/location'
 import styled from "styled-components";
 
@@ -52,36 +52,46 @@ text-shadow: -1px 0 #ffffff, 0 1px black, 1px 0 #ffffff, 0 -1px #ffffff;
 `;
 
 
+declare global {
+  interface Window {
+      kakao: any;
+  }
+}
 
+interface place {
+  id: string,	// 장소 ID
+  place_name:	string,	// 장소명, 업체명
+  category_name: 	string,	// 카테고리 이름
+  category_group_code:	string,	// 중요 카테고리만 그룹핑한 카테고리 그룹 코드
+  category_group_name:	string,	// 중요 카테고리만 그룹핑한 카테고리 그룹명
+  phone:	string,	// 전화번호
+  address_name:	string,	// 전체 지번 주소
+  road_address_name:	string,	// 전체 도로명 주소
+  x:	string,	// X 좌표 혹은 경도(longitude)
+  y:	string,	// Y 좌표 혹은 위도(latitude)
+  place_url:	string,	// 장소 상세 페이지 URL
+  distance:	string,	// 중심좌표까지의 거리 (단, x,y 파라미터를 준 경우에만 존재)
+  like? : number
+}
 
 const { kakao } = window
 
-const MapContainer = ({ category ,setDB,DB}) => {
-console.log('kako:',kakao);
-  const [rest,setRest]= useState([])
-  const [placeList,setPlaceList]=useState([]);
 
-  const onclickLike = useCallback((place)=>{
-      console.log('click 정보:',place)
-      const data = JSON.parse(localStorage.getItem('DB'))
-      console.log('data:',data);
-      const newData = data.forEach(v=>{
-          if(v.id === place.id){
-              v.like=v.like+1;
-          }
-      })
+const MapContainer = ( category: string, setDB: Function, DB: Array<place> ) => {
+
+  const [placeList ,setPlaceList]=useState<place[]>([]);
+
+  const onclickLike = useCallback((place:place)=>{
+      const data = JSON.parse(localStorage.getItem('DB')!)
 
       localStorage.setItem('DB', JSON.stringify(data))
   },[])
 
-
     useEffect(() => {
     var placeOverlay = new kakao.maps.CustomOverlay({zIndex:1}), 
-    contentNode = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
-    markers = [], // 마커를 담을 배열입니다
-    currCategory = category; // 현재 선택된 카테고리를 가지고 있을 변수입니다
- console.log('실행:',category)
- console.log('currCategory:',currCategory)
+    contentNode: HTMLDivElement = document.createElement('div'), // 커스텀 오버레이의 컨텐츠 엘리먼트 입니다 
+    markers :any[] = [], // 마커를 담을 배열입니다
+    currCategory: string = category; // 현재 선택된 카테고리를 가지고 있을 변수입니다
 
     var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
     mapOption = {
@@ -95,7 +105,6 @@ var map = new kakao.maps.Map(mapContainer, mapOption);
 
 // 장소 검색 객체를 생성합니다
 var ps = new kakao.maps.services.Places(map); 
-console.log('ps:',ps)
 
 // 👦지도에 idle 이벤트를 등록합니다
 kakao.maps.event.addListener(map, 'idle', searchPlaces);
@@ -117,21 +126,15 @@ placeOverlay.setContent(contentNode);
 addCategoryClickEvent();
 
 
-
 // 엘리먼트에 이벤트 핸들러를 등록하는 함수입니다
-function addEventHandle(target, type, callback) {
-  if (target.addEventListener) {
-      target.addEventListener(type, callback);
-  } else {
-      target.attachEvent('on' + type, callback);
-  }
+function addEventHandle(target: HTMLDivElement, type: keyof HTMLElementEventMap, callback: EventListenerOrEventListenerObject) {
+    target.addEventListener(type, callback);
 }
 
 
 
 // 카테고리 검색을 요청하는 함수입니다
 function searchPlaces() {
-  console.log('카테고리 검색을 요청')
   if (!currCategory) {
       return;
   }
@@ -147,16 +150,16 @@ function searchPlaces() {
 
 
 // 장소검색이 완료됐을 때 호출되는 콜백함수 입니다
-function placesSearchCB(data, status, pagination) {
+function placesSearchCB(data: Array<place>, status: string, pagination: number) {
     //localstorage
-    const newDB=[...data.filter(v=>DB.every(s=>s.id !== v.id))]
-    const likeAdd =newDB.forEach((v)=>{v.like=0})
-    // const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
-    const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
+    // const newDB=[...data.filter((v: place)=>DB.every((s:place)=>s.id !== v.id))];
+    // const likeAdd =newDB.forEach((v)=>{v.like=0});
+    // // const newarr=DB.push(...data.filter(v=>DB.every(s=>s.id !== v.id)));
+    // const newarr=DB.push(...data.filter((v: place)=>DB.every((s:place)=>s.id !== v.id)));
     // const newarr=DB.push(newDB)
     // const likeAdd =DB.forEach((v)=>{console.log(v); v.like=0})
     localStorage.setItem('DB',JSON.stringify(DB));
-  setPlaceList(data)
+    setPlaceList(data)
   if (status === kakao.maps.services.Status.OK) {
       // 정상적으로 검색이 완료됐으면 지도에 마커를 표출합니다
       displayPlaces(data);
@@ -170,12 +173,10 @@ function placesSearchCB(data, status, pagination) {
 
 
 // 지도에 마커를 표출하는 함수입니다
-function displayPlaces(places) {
-  console.log('지도에 마커를 표출')
+function displayPlaces(places : Array<place>) {
   // 몇번째 카테고리가 선택되어 있는지 얻어옵니다
   // 이 순서는 스프라이트 이미지에서의 위치를 계산하는데 사용됩니다
-  var order = document.getElementById(currCategory).getAttribute('data-order');
-  console.log('places:',places);
+  var order = document.getElementById(currCategory)!.getAttribute('data-order')!;
 
   for ( var i=0; i<places.length; i++ ) {
 
@@ -186,7 +187,6 @@ function displayPlaces(places) {
           // 장소정보를 표출하도록 클릭 이벤트를 등록합니다
           (function(marker, place) {
               kakao.maps.event.addListener(marker, 'click', function() {
-                console.log('마커클릭')
                   displayPlaceInfo(place);
               });
           })(marker, places[i]);
@@ -196,12 +196,12 @@ function displayPlaces(places) {
 
 
 // 마커를 생성하고 지도 위에 마커를 표시하는 함수입니다
-function addMarker(position, order) {
+function addMarker(position: any, order: string) {
   var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/places_category.png', // 마커 이미지 url, 스프라이트 이미지를 씁니다
       imageSize = new kakao.maps.Size(27, 28),  // 마커 이미지의 크기
       imgOptions =  {
           spriteSize : new kakao.maps.Size(72, 208), // 스프라이트 이미지의 크기
-          spriteOrigin : new kakao.maps.Point(46, (order*36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
+          spriteOrigin : new kakao.maps.Point(46, ( Number(order) *36)), // 스프라이트 이미지 중 사용할 영역의 좌상단 좌표
           offset: new kakao.maps.Point(11, 28) // 마커 좌표에 일치시킬 이미지 내에서의 좌표
       },
       markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imgOptions),
@@ -227,7 +227,7 @@ function removeMarker() {
 
 
 // 클릭한 마커에 대한 장소 상세정보를 커스텀 오버레이로 표시하는 함수입니다
-function displayPlaceInfo (place) {
+function displayPlaceInfo (place:place) {
   // var content = '<div class="placeinfo">' +
   //             '   <a class="title" href="' + place.place_url + '" target="_blank" title="' + place.place_name + '">' + place.place_name + '</a>';   
   // if (place.road_address_name) {
@@ -239,7 +239,6 @@ function displayPlaceInfo (place) {
   // content += '    <span class="tel">' + place.phone + '</span>' + 
   //             '</div>' + 
   //             '<div class="after"></div>';
-console.log('palece:',place)
 let content =  ` 
 <div class="placeinfo">  
  <a class="title" href=${place.place_url} target="_blank" title=${place.place_name}>${place.place_name}</a> 
@@ -264,19 +263,17 @@ let content =  `
 
 // 각 카테고리에 클릭 이벤트를 등록합니다
 function addCategoryClickEvent() {
-  console.log('각 카테고리에 클릭 이벤트를 등록')
   var category = document.getElementById('category'),
-      children = category.children;
+      children = category!.children;
 
   for (var i=0; i<children.length; i++) {
-      children[i].onclick = onClickCategory;
+    let element: HTMLElement = children[i] as HTMLElement;
+    element.onclick = onClickCategory;
   }
 }
 
 // 카테고리를 클릭했을 때 호출되는 함수입니다
-function onClickCategory() {
-  console.log('카테고리를 클릭했을 때 호출되는 함수')
-  console.log('this:',this)
+function onClickCategory(this : any) {
 
   var id = this.id,
       className = this.className;
@@ -295,9 +292,9 @@ function onClickCategory() {
 }
 
 // 클릭된 카테고리에만 클릭된 스타일을 적용하는 함수입니다
-function changeCategoryClass(el) {
+function changeCategoryClass(el?: HTMLElement) {
   var category = document.getElementById('category'),
-      children = category.children,
+      children = category!.children,
       i;
 
   for ( i=0; i<children.length; i++ ) {
@@ -312,7 +309,7 @@ function changeCategoryClass(el) {
 
   return (
     <>
-  <Container class="map_wrap">
+  <Container className="map_wrap">
       <Contents>
     <MapSection id="map" >
     <ul id="category">
@@ -330,30 +327,20 @@ function changeCategoryClass(el) {
         </li>
     </ul>
   </MapSection>
-          <RightListSection>
-                  <MainTitle>{'오늘 본 편의점  '}{ localStorage.getItem('DB')  ? `${JSON.parse(localStorage.getItem('DB')).length}개` : `0개`}</MainTitle>
-              { localStorage.getItem('DB') ?(JSON.parse(localStorage.getItem('DB')).map((place) => {
-                  return(
-                  <div class='categoryList'>
-                  <a href={place.place_url}> <span>{place.place_name}</span></a>
-              {/*<span>{place['category_name'].split(">").pop()}</span>*/}
-                  <span>{`종아요 ${place.like}`}</span>
-                  </div>)
-              })):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
-          </RightListSection>
+         
   </Contents>
   <LeftListSection>
       <MainTitle>{'편의점 실시간 리스트  '}{`${placeList.length}개`}</MainTitle>
   {placeList.length ? placeList.map((place,index) => {
     return(
-    <div class='categoryList'>
+    <div className='categoryList'>
         {`${index}. `}
-    <span>{place.place_name}</span>
-     <span>{place['category_name'].split(">").pop()}</span>
-     <a href={place.place_url}>👉자세히 보기</a>
+    <span>{place['place_name']}</span>
+     <span>{(place['category_name'] as string).split(">").pop()}</span>
+     <a href={place['place_url']}>👉자세히 보기</a>
         <button onClick={()=>onclickLike(place)}>{`좋아요 👍🏻`}</button>
     </div>)
-  }):<div class='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
+  }):<div className='categoryList'>{'좌측 상단 카테고리를 클릭해주세요....'}</div>}
   
   </LeftListSection>
   </Container>
