@@ -25,7 +25,7 @@ const [isLogin,setIsLogin] = useState(false);
 //service 주입 api 요청 
 const onSignUp =useCallback(async (username,password,name,email)=>{
         console.log('회원가입....')
-    authService.signup(username,password,name,email)
+    authService.signUp(username,password,name,email)
     .then((res)=>setIsLogin(res))
 },[authService]);
 

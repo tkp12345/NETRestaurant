@@ -35,7 +35,8 @@ async login(username,password){
 
 //회원가입 
 async signUp(username , password,name, email){
-//회원가입 비동기 요청 
+//회원가입 비동기 요청
+    console.log('service - 회원가입')
  const res = await this.http.fetch('/auth/signup',{
      method:'POST',
      body:JSON.stringify({
